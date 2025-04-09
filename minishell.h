@@ -1,32 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/09 17:10:51 by diogribe         ###   ########.fr       */
+/*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
+/*   Updated: 2025/04/09 16:23:29 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-int main(void)
-{
-	char *input;
+#include "libft/libft.h"
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
-	while (1)
-	{
-		input = readline("$ ");
-		if (!input || ft_strncmp(input, "exit", 4) == 0) // ctrl-D (EOF)
-			break;
-		// Usa o input aqui...
-		printf("zsh: command not found: %s\n", input);
-		// Liberta a memória
-		free(input);
-		rl_clear_history();
-	}
-	free(input);
-	return 0;
-}
+#endif

@@ -1,12 +1,13 @@
 NAME	:= minishell
 CC		:= cc
 FLAGS	:= -Wall -Wextra -Werror -g
+LIBS	:= -lreadline
 
 # Library Paths - No Spaces Around '='
 LIBFT_DIR	:= libft
 
 # Source Files
-SRCS := 
+SRCS := main.c \
 
 OBJS := $(SRCS:.c=.o)
 
@@ -19,7 +20,7 @@ all: $(NAME)
 # Executable Creation
 $(NAME): $(OBJS) $(LIBFT_A)
 	@echo "Compiling $(NAME)..."
-	$(CC) $(FLAGS) -o $@ $^ $(LIBFT_A)
+	$(CC) $(FLAGS) -o $@ $^ $(LIBFT_A) $(LIBS)
 
 # Library Compilation
 $(LIBFT_A):
