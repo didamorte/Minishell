@@ -3,170 +3,102 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/09 17:51:28 by diogribe          #+#    #+#             */
-/*   Updated: 2025/03/31 15:03:05 by diogribe         ###   ########.fr       */
+/*   Created: 2023/12/06 22:30:55 by rneto-fo          #+#    #+#             */
+/*   Updated: 2023/12/06 22:31:56 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/* resetamos o buffer para o inicio da proxima linha */
-char	*ft_next_line(char *buffer)
+static char	*fish_text(int fd, char *buf)
 {
-	char	*line;
-	int		i;
-	int		j;
+	char	*str;
+	char	*new_buf;
+	int		read_chars;
 
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
-	{
-		free(buffer);
+	str = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!str)
 		return (NULL);
-	}
-	line = ft_calloc((gnl_ft_strlen(buffer) - i + 1), sizeof(char));
-	i++;
-	j = 0;
-	while (buffer[i])
-		line[j++] = buffer[i++];
-	free(buffer);
-	return (line);
-}
-
-/* aloca a linha ate o \n */
-char	*ft_newline(char *buffer)
-{
-	char	*line;
-	int		i;
-
-	i = 0;
-	if (!buffer)
-		return (NULL);
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	line = ft_calloc(i + 2, sizeof(char));
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
+	read_chars = 1;
+	while (!(ft_strchr(buf, '\n')) && read_chars != 0)
 	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] && buffer[i] == '\n')
-		line[i++] = '\n';
-	return (line);
-}
-
-/* junta o buffer ao resultado */
-char	*ft_free(char *result, char *buffer)
-{
-	char	*temp;
-
-	temp = ft_strjoin(result, buffer);
-	free(result);
-	return (temp);
-}
-
-/* lê o ficheiro e procura o \n */
-char	*ft_file(int fd, char *result)
-{
-	char	*buffer;
-	int		already_read;
-
-	if (!result)
-		result = ft_calloc(1, 1);
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	already_read = 1;
-	while (already_read > 0)
-	{
-		already_read = read(fd, buffer, BUFFER_SIZE);
-		if (already_read == -1)
+		read_chars = read(fd, str, BUFFER_SIZE);
+		if (read_chars == -1)
 		{
-			free(result);
-			free(buffer);
+			free(str);
+			free(buf);
 			return (NULL);
 		}
-		buffer[already_read] = 0;
-		result = ft_free(result, buffer);
-		if (ft_strchr(buffer, '\n'))
-			break ;
+		str[read_chars] = '\0';
+		new_buf = ft_strjoin(buf, str);
+		free(buf);
+		buf = new_buf;
 	}
-	free(buffer);
-	return (result);
+	free(str);
+	return (buf);
+}
+
+static char	*get_line(char *buf)
+{
+	char	*new_line;
+	int		i;
+
+	i = 0;
+	if (!buf[i])
+		return (NULL);
+	while (buf[i] && buf[i] != '\n')
+		i++;
+	new_line = (char *)malloc((i + 2) * sizeof(char));
+if (!new_line)
+		return (NULL);
+	new_line[i + 1] = '\0';
+	while (i >= 0)
+	{
+		new_line[i] = buf[i];
+		i--;
+	}
+	return (new_line);
+}
+
+static char	*buffer_update(char *buf)
+{
+	int		i;
+	char	*updated;
+	int		buffer_size;
+
+	i = 0;
+	buffer_size = ft_strlen(buf);
+	while (buf[i] && buf[i] != '\n')
+		i++;
+	i++;
+	updated = ft_substr(buf, i, (buffer_size - i));
+	if (!updated)
+	{
+		free (buf);
+		return (NULL);
+	}
+	free(buf);
+	return (updated);
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
 	static char	*buffer;
+	char		*new_line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (BUFFER_SIZE <= 0 || fd < 0)
 	{
-		free(buffer);
-		buffer = NULL;
+		if (buffer)
+			free(buffer);
 		return (NULL);
 	}
-	buffer = ft_file(fd, buffer);
+	buffer = fish_text (fd, buffer);
 	if (!buffer)
 		return (NULL);
-	line = ft_newline(buffer);
-	buffer = ft_next_line(buffer);
-	return (line);
-}
-/* 
-int count_lines(const char *filename);
-
-int	main(int ac, char **av)
-{
-	char	*line;
-	int		fd;
-	int		i;
-	int		j;
-
-	(void)ac;
-	fd = open(av[1], O_RDWR);
-	if (fd < 0)
-		return (1);
-	j = 0;
-	i = count_lines(av[1]) + 1;
-	while (j++ < i)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		else
-			printf("line [%02d]: %s", j, line);
-		free(line);
-		usleep(25000);  // Delay for 25 milliseconds
-	}
-	close(fd);
-	return (0);
+	new_line = get_line(buffer);
+	buffer = buffer_update(buffer);
+	return (new_line);
 }
 
-int count_lines(const char *filename)
-{
-	int fd = open(filename, O_RDONLY);
-	if (fd < 0) {
-		perror("Failed to open file");
-		return -1;
-	}
-	int count = 0;
-	char buffer[1024];
-	ssize_t bytes_read;
-	while ((bytes_read = read(fd, buffer, sizeof(buffer))) > 0) {
-		for (ssize_t i = 0; i < bytes_read; i++) {
-			if (buffer[i] == '\n') {
-				count++;
-			}
-		}
-	}
-	if (bytes_read < 0) {
-		perror("Failed to read file");
-		close(fd);
-		return -1;
-	}
-	close(fd);
-	return count;
-} */
