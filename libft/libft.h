@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 11:38:20 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/09 15:26:03 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/11 17:19:36 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <limits.h>
+# include "ft_printf/ft_printf.h"
+# include "get_next_line/get_next_line.h"
 
 /* PARTE 1 */
 

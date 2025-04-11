@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:30:55 by rneto-fo          #+#    #+#             */
-/*   Updated: 2023/12/06 22:31:56 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/04/11 19:14:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,11 @@ static char	*buffer_update(char *buf)
 	int		buffer_size;
 
 	i = 0;
-	buffer_size = ft_strlen(buf);
+	buffer_size = gnl_ft_strlen(buf);
 	while (buf[i] && buf[i] != '\n')
 		i++;
 	i++;
-	updated = ft_substr(buf, i, (buffer_size - i));
+	updated = gnl_ft_substr(buf, i, (buffer_size - i));
 	if (!updated)
 	{
 		free (buf);

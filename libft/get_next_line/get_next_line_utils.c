@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:30:37 by rneto-fo          #+#    #+#             */
-/*   Updated: 2023/12/06 22:31:56 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/04/11 19:14:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*ft_strchr(const char *str, int c)
 	if (!str)
 		return (0);
 	if (c == '\0')
-		return ((char *)&str[ft_strlen(str)]);
+		return ((char *)&str[gnl_ft_strlen(str)]);
 	while (str[i] != '\0')
 	{
 		if (str[i] == (char) c)
@@ -37,7 +37,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	size;
 
 	i = 0;
-	size = ft_strlen(s1) + ft_strlen(s2) + 1;
+	size = gnl_ft_strlen(s1) + gnl_ft_strlen(s2) + 1;
 	final = (char *)malloc(size * sizeof(char));
 	if (!final)
 		return (NULL);
@@ -55,7 +55,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (final);
 }
 
-size_t	ft_strlen(const char *str)
+size_t	gnl_ft_strlen(const char *str)
 {
 	size_t	i;
 
@@ -67,14 +67,14 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*gnl_ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
 	size_t	size;
 
 	if (s == NULL)
 		return (NULL);
-	size = ft_strlen(s);
+	size = gnl_ft_strlen(s);
 	if (size <= start)
 	{
 		return (NULL);
@@ -94,7 +94,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t n)
 	size_t	src_lenght;
 
 	i = 0;
-	src_lenght = ft_strlen (src);
+	src_lenght = gnl_ft_strlen (src);
 	if (n == 0)
 		return (src_lenght);
 	while (i < n -1 && src[i] != '\0')
