@@ -6,11 +6,22 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/15 17:46:15 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:04:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+volatile sig_atomic_t	g_exit_status = 0;
+
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
 void	free_cmd(t_cmd *cmd)
 {
@@ -54,12 +65,18 @@ int main(void)
 	char	*input;
 	char	*cwd;
 	t_cmd	*cmd;
+	rl_catch_signals = 0;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
 
 	while (1)
 	{
 		input = readline("$> ");
 		if (!input)
+		{
+			write(1, "exit\n", 5);
 			break;
+		}
 		if (ft_strlen(input) > 0)
 			add_history(input);
 		cmd = parse_input(input);
@@ -69,7 +86,11 @@ int main(void)
 			continue;
 		}
 		if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
+		{
+			write(1, "exit\n", 5);
+			free_cmd(cmd);
 			break;
+		}
 		else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
 		{
 			cwd = getcwd(NULL, 0);
@@ -98,7 +119,6 @@ int main(void)
 		free_cmd(cmd);
 		free(input);
 	}
-	free_cmd(cmd);
 	free(input);
 	rl_clear_history();
 	return 0;
