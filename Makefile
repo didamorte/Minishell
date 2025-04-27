@@ -7,7 +7,7 @@ LIBS	:= -lreadline
 LIBFT_DIR	:= libft
 
 # Source Files
-SRCS := minishell.c \
+SRCS := minishell.c quotes_utils.c quotes_utils2.c \
 
 OBJS := $(SRCS:.c=.o)
 
