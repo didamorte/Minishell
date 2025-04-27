@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:30:55 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/04/11 19:14:21 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/27 21:57:47 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static char	*get_line(char *buf)
 	while (buf[i] && buf[i] != '\n')
 		i++;
 	new_line = (char *)malloc((i + 2) * sizeof(char));
-if (!new_line)
+	if (!new_line)
 		return (NULL);
 	new_line[i + 1] = '\0';
 	while (i >= 0)
@@ -101,4 +101,3 @@ char	*get_next_line(int fd)
 	buffer = buffer_update(buffer);
 	return (new_line);
 }
-
