@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 12:24:40 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/30 12:26:36 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,9 @@ void	free_cmd(t_cmd *cmd)
 t_cmd	*parse_input(char *input)
 {
 	t_cmd	*cmd;
+	int		i;
 
+	i = 0;
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return NULL;
@@ -56,8 +58,48 @@ t_cmd	*parse_input(char *input)
 		free_cmd(cmd);
 		return (NULL);
 	}
+	while (cmd->args[i])
+	{
+		char *arg = cmd->args[i];
+		char *cleaned = trim_outer_quotes(arg);
+
+		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
+		{
+			free(cmd->args[i]);
+			cmd->args[i] = cleaned;
+		}
+		else
+		{
+			char *expanded = expand_variables(cleaned);
+			free(cleaned);
+			free(cmd->args[i]);
+			cmd->args[i] = expanded;
+		}
+		i++;
+	}
 	cmd->cmd = cmd->args[0];
 	return (cmd);
+}
+
+void execute_echo(t_cmd *cmd, int arg_count)
+{
+    int i = 1;
+    int n_flag = 0;
+    
+    if (arg_count > 1 && ft_strncmp(cmd->args[1], "-n", 3) == 0)
+    {
+        n_flag = 1;
+        i = 2;
+    }
+    while (cmd->args[i])
+    {
+        printf("%s", cmd->args[i]);
+        if (cmd->args[i + 1])
+            printf(" ");
+        i++;
+    }
+    if (!n_flag)
+        printf("\n");
 }
 
 int main(void)
@@ -66,6 +108,9 @@ int main(void)
 	char	**cmds;
 	char	*cwd;
 	t_cmd	*cmd;
+	int arg_count;
+
+	arg_count = 0;
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
@@ -79,13 +124,27 @@ int main(void)
 			break;
 		}
 		if (ft_strlen(input) > 0)
-			add_history(input);
+		{
+			add_history(input);			
+			while (check_unclosed_quotes(input))
+			{
+				char *continued = readline("> ");
+				if (!continued)
+					break;			
+				char *tmp = input;
+				input = ft_strjoin_flex(tmp, "\n", 1);
+				input = ft_strjoin_flex(input, continued, 1);
+				free(continued);
+			}
+		}			
 		cmd = parse_input(input);
 		if (!cmd)
 		{
 			free(input);
 			continue;
 		}
+        while (cmd->args[arg_count])
+            arg_count++;	
 		/* if (ft_strchr(input, '|'))
 		{
 			cmds = ft_split(input, '|');
@@ -114,16 +173,16 @@ int main(void)
 		}
 		else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
 		{
-			if (ft_strlen(input) < 5)
-				printf("\n");
-			else if (ft_strncmp(cmd->args[1], "-n", 3) == 0)
-				printf("%s", input + 7);
-			else
-				printf("%s\n", input + 5);
+			// if (ft_strlen(input) < 5)
+			// 	printf("\n");
+			// else if (ft_strncmp(cmd->args[1], "-n", 3) == 0)
+			// 	printf("%s", input + 7);
+			// else
+			// 	printf("%s\n", input + 5);
+			execute_echo(cmd, arg_count);
 		}
 		else
 			printf("zsh: command not found: %s\n", cmd->cmd);
-		// Free dos tokens
 		free_cmd(cmd);
 		free(input);
 	}
