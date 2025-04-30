@@ -6,13 +6,11 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 12:27:46 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/30 12:28:26 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile sig_atomic_t	g_exit_status = 0;
 
 void	handle_sigint(int sig)
 {
