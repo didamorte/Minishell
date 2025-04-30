@@ -8,6 +8,7 @@ LIBFT_DIR	:= libft
 
 # Source Files
 SRCS := minishell.c \
+		pipex.c
 
 OBJS := $(SRCS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/24 13:36:30 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/24 14:52:08 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,19 @@ typedef struct	s_cmd
 	char **args;
 }				t_cmd;
 
+typedef struct	s_pipex
+{
+	int		i;
+	int		pipefd[2];
+	int		prev_fd;
+	int		status;
+	pid_t	pid;
+	char	**args;
+	char	*trimmed;
+}				t_pipex;
+
+int		ft_pipes(char **cmds);
+void	pipe_child(t_pipex *p, char **cmds);
+void	free_split(char **arr);
 
 #endif
