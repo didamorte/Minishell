@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/24 14:52:19 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:53:28 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,17 @@ volatile sig_atomic_t	g_exit_status = 0;
 
 void	free_split(char **arr)
 {
-	int i = 0;
-	if (!arr)
+	int	i;
+
+	i = 0;
+	if (arr == NULL)
 		return;
-	while (arr[i])
-		free(arr[i++]);
+	while (arr[i] != NULL)
+	{
+		free(arr[i]);
+		arr[i] = NULL;
+		i++;
+	}
 	free(arr);
 }
 

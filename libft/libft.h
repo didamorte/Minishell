@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 11:38:20 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/27 21:56:37 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:59:04 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strrchr(const char *s, int c);
 /*compara 2 strings em n caracteres*/
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+/*compara 2 strings*/
+int		ft_strcmp(const char *s1, const char *s2);
 /*procura um caracter num array*/
 void	*ft_memchr(const void *s1, int c, size_t n);
 /*compara 2 arrays em n caracteres*/
