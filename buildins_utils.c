@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 14:50:05 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:56:48 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,8 @@ int	execute_child_process(char *path, char *cmd)
 	free_split(envp);
 	if (result == -1)
 	{
-		ft_putstr_fd(cmd, 2);
-		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(cmd, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
 		perror("");
 	}
 	return (result);

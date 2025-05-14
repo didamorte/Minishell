@@ -6,13 +6,11 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 14:53:28 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/06 16:20:59 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-volatile sig_atomic_t	g_exit_status = 0;
 
 void	free_split(char **arr)
 {
@@ -30,7 +28,7 @@ void	free_split(char **arr)
 	free(arr);
 }
 
-void	pipe_child(t_pipex *p, char **cmds)
+/* void	pipe_child(t_pipex *p, char **cmds)
 {
 	if (p->prev_fd != -1)
 	{
@@ -83,5 +81,4 @@ int	ft_pipes(char **cmds)
 		}
 	}
 	return(0);
-}
-
+} */

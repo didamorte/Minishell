@@ -6,35 +6,36 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 16:55:04 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:14:08 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	process_args(t_cmd *cmd)
+void	process_args(t_cmd *cmd, int last_exit_status)
 {
 	int		i;
 	char	*arg;
 	char	*cleaned;
 	char	*expanded;
-	char	*current;
 
 	i = 0;
 	while (cmd->args[i])
 	{
 		arg = cmd->args[i];
-		cleaned = trim_outer_quotes(arg);
+		cleaned = remove_quotes(arg);
 		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
-			current = cleaned;
+		{
+			free(cmd->args[i]);
+			cmd->args[i] = cleaned;
+		}
 		else
 		{
-			expanded = expand_variables(cleaned);
-			current = expanded;
+			expanded = expand_variables(cleaned, last_exit_status);
+			free(cmd->args[i]);
 			free(cleaned);
+			cmd->args[i] = expanded;
 		}
-		free(cmd->args[i]);
-		cmd->args[i] = current;
 		i++;
 	}
 }
@@ -47,15 +48,9 @@ void	free_cmd(t_cmd *cmd)
 	if (!cmd)
 		return;
 	if (cmd->args)
-	{
-		i = 0;
-		while (cmd->args[i])
-		{
-			free(cmd->args[i]);
-			i++;
-		}
-		free(cmd->args);
-	}
+		free_split(cmd->args);
+	if (cmd->cmd)
+		free(cmd->cmd);
 	free(cmd);
 }
 

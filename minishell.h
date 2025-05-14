@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 16:01:30 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:42:08 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,20 @@
 #include <signal.h>
 #include <sys/wait.h>
 
-typedef struct s_cmd
+/* Quotes */
+typedef struct	s_cmd
 {
 	char	*cmd;
 	char	**args;
 	bool	double_quote;
-}	t_cmd;
+}				t_cmd;
 
 bool	check_unclosed_quotes(const char *str);
-char	*expand_variables(const char *arg);
-char	*trim_outer_quotes(const char *str);
+char	*expand_variables(const char *arg, int last_exit_status);
+char	*remove_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
+
+/* Pipes */
 
 typedef struct	s_pipex
 {
@@ -44,8 +47,8 @@ typedef struct	s_pipex
 	char	*trimmed;
 }				t_pipex;
 
-int		ft_pipes(char **cmds);
-void	pipe_child(t_pipex *p, char **cmds);
+/* int		ft_pipes(char **cmds);
+void	pipe_child(t_pipex *p, char **cmds); */
 void	free_split(char **arr);
 
 /* Input */
@@ -56,7 +59,7 @@ int		process_command(t_cmd *cmd, int arg_count);
 
 /* Input utils */
 
-void	process_args(t_cmd *cmd);
+void	process_args(t_cmd *cmd, int last_exit_status);
 void	free_cmd(t_cmd *cmd);
 void	cleanup(t_cmd *cmd, char *input);
 void	final_cleanup(char *input);
@@ -86,5 +89,6 @@ int		unset_env_var(char *name);
 void	swap_env_vars(char **a, char **b);
 void	skip_var_in_copy(char **new_env, char *name);
 char	*ft_strjoin_triple(char *s1, char *s2, char *s3);
+int		is_valid_n_flag(const char *arg);
 
 #endif

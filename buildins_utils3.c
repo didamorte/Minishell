@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:55:57 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 15:56:50 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:41:54 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,3 +57,18 @@ char	*ft_strjoin_triple(char *s1, char *s2, char *s3)
 	return (result);
 }
 
+int	is_valid_n_flag(const char *arg)
+{
+	int	i;
+
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 2;
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}

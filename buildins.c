@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 15:38:42 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/14 18:42:45 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,18 +97,18 @@ int	handle_echo(t_cmd *cmd, int arg_count)
 	int		n_flag;
 	char	**args;
 
+	args = cmd->args;
 	i = 1;
 	n_flag = 0;
-	args = cmd->args;
-	if (arg_count > 1 && ft_strncmp(args[1], "-n", 3) == 0)
+	while (i < arg_count && is_valid_n_flag(args[i]))
 	{
 		n_flag = 1;
-		i = 2;
+		i++;
 	}
-	while (args[i])
+	while (i < arg_count)
 	{
 		ft_putstr_fd(args[i], 1);
-		if (args[i + 1])
+		if (i + 1 < arg_count)
 			ft_putstr_fd(" ", 1);
 		i++;
 	}
@@ -122,18 +122,26 @@ int	handle_external(char *cmd)
 	char	*path;
 	pid_t	pid;
 	int		status;
+	void	(*original_sigquit)(int);
+	void	(*original_sigint)(int);
 
 	path = get_path(cmd);
 	if (!path)
 		return (handle_command_not_found(cmd));
+	original_sigquit = signal(SIGQUIT, SIG_IGN);
+	original_sigint = signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid == 0)
 	{
+		signal(SIGQUIT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
 		if (execute_child_process(path, cmd) == -1)
 			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	waitpid(pid, &status, 0);
+	signal(SIGQUIT, original_sigquit);
+	signal(SIGINT, original_sigint);
 	free(path);
 	return (WEXITSTATUS(status));
 }
