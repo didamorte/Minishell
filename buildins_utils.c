@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/06 16:56:48 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/15 16:20:12 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,13 @@ int	validate_exit_args(char **args, int arg_count)
 	return (is_valid);
 }
 
-int	execute_child_process(char *path, char *cmd)
+int	execute_child_process(char *path, char *cmd, char	**args)
 {
 	char	**envp;
 	int		result;
 
 	envp = env_to_array();
-	result = execve(path, (char *[]){cmd, NULL}, envp);
+	result = execve(path, args, envp);
 	free_split(envp);
 	if (result == -1)
 	{

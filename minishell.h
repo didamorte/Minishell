@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/14 18:42:08 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/15 14:36:48 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,14 @@ int		handle_export(char **args);
 int		handle_unset(char **args);
 int		handle_env(char **args);
 /*not buildins*/
-int		handle_external(char *cmd);
+int		handle_external(char *cmd, char	**args);
 
 /* Buildins utils */
 
 char	*get_path(char *cmd);
 char	**env_to_array(void);
 int		validate_exit_args(char **args, int arg_count);
-int		execute_child_process(char *path, char *cmd);
+int		execute_child_process(char *path, char *cmd, char	**args);
 int		handle_command_not_found(char *cmd);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);

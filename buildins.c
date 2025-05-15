@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/14 18:42:45 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/15 14:35:16 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ int	handle_echo(t_cmd *cmd, int arg_count)
 	return (0);
 }
 
-int	handle_external(char *cmd)
+int	handle_external(char *cmd, char	**args)
 {
 	char	*path;
 	pid_t	pid;
@@ -135,7 +135,7 @@ int	handle_external(char *cmd)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
-		if (execute_child_process(path, cmd) == -1)
+		if (execute_child_process(path, cmd, args) == -1)
 			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}

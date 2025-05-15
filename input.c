@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/14 17:50:58 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/15 14:34:35 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	chose_buildin(t_cmd *cmd, int arg_count)
 	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
 		status = handle_env(cmd->args);
 	else
-		status = handle_external(cmd->cmd);
+		status = handle_external(cmd->cmd, cmd->args);
 	return (status);
 }
 
