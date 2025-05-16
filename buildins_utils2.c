@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:39:05 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 15:54:34 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/16 17:58:10 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ int	set_env_var(char *name, char *value)
 	char		*new_var;
 	char		**new_env;
 	int			count;
+	int			null_index;
 
 	new_var = ft_strjoin_triple(name, "=", value);
 	if (!new_var)
@@ -112,6 +113,12 @@ int	set_env_var(char *name, char *value)
 	if (!new_env)
 		return (free(new_var), 1);
 	copy_and_replace_var(new_env, name, new_var);
+	if (getenv(name) != NULL)
+		null_index = count;
+	else
+		null_index = count + 1;
+	new_env[null_index] = NULL;
+	environ = new_env;
 	free(new_var);
 	return (0);
 }
@@ -121,15 +128,15 @@ int	unset_env_var(char *name)
 	extern char	**environ;
 	char		**new_env;
 	int			count;
-	int			found;
 
 	count = 0;
-	found = 0;
 	while (environ[count])
 		count++;
 	new_env = malloc((count + 1) * sizeof(char *));
 	if (!new_env)
 		return (1);
 	skip_var_in_copy(new_env, name);
+	free_split(environ);
+	environ = new_env;
 	return (0);
 }

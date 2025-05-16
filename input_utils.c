@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/14 18:14:08 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/16 17:33:59 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,6 @@ void	process_args(t_cmd *cmd, int last_exit_status)
 
 void	free_cmd(t_cmd *cmd)
 {
-	int	i;
-
-	i = 0;
 	if (!cmd)
 		return;
 	if (cmd->args)
