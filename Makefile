@@ -8,6 +8,9 @@ LIBFT_DIR	:= libft
 
 # Source Files
 SRCS := minishell.c quotes_utils.c quotes_utils2.c \
+		pipex.c buildins.c buildins_utils.c input.c \
+		input_utils.c buildins2.c buildins_utils2.c\
+		buildins_utils3.c\
 
 OBJS := $(SRCS:.c=.o)
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:30:55 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/04/27 21:57:47 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:45:48 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static char	*fish_text(int fd, char *buf)
 			return (NULL);
 		}
 		str[read_chars] = '\0';
-		new_buf = ft_strjoin(buf, str);
+		new_buf = gnl_ft_strjoin(buf, str);
 		free(buf);
 		buf = new_buf;
 	}
