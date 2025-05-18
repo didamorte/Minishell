@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:31:10 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/04/11 19:14:21 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:45:48 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *str, int c);
-char	*ft_strjoin(char const *s1, char const *s2);
+char	*gnl_ft_strjoin(char const *s1, char const *s2);
 size_t	gnl_ft_strlen(const char *str);
 char	*gnl_ft_substr(char const *s, unsigned int start, size_t len);
 size_t	ft_strlcpy(char *dst, const char *src, size_t n);

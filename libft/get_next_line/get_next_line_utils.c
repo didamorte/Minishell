@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 22:30:37 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/04/11 19:14:21 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:45:48 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strchr(const char *str, int c)
 	return (0);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*gnl_ft_strjoin(char const *s1, char const *s2)
 {
 	char	*final;
 	int		i;

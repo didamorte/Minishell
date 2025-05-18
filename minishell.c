@@ -3,163 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/22 22:06:11 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/18 12:28:28 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	free_cmd(t_cmd *cmd)
-{
-	int	i;
+int	g_last_exit_status = 0;
 
-	i = 0;
-	if (!cmd)
-		return;
-	if (cmd->args)
-	{
-		i = 0;
-		while (cmd->args[i])
-		{
-			free(cmd->args[i]);
-			i++;
-		}
-		free(cmd->args);
-	}
-	free(cmd);
+void	handle_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
-t_cmd	*parse_input(char *input)
+void	handle_sigquit(int sig)
 {
-	t_cmd	*cmd;
-	int		i;
+	pid_t	pid;
+	int		status;
 
-	i = 0;
-	cmd = malloc(sizeof(t_cmd));
-	if (!cmd)
-		return NULL;
-	cmd->args = ft_split(input, ' ');
-	if (!cmd->args || !cmd->args[0])
+	(void)sig;
+	pid = waitpid(-1, &status, WNOHANG);
+	if (pid == 0)
 	{
-		free_cmd(cmd);
-		return (NULL);
+		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
-	while (cmd->args[i])
+	else
 	{
-		char *arg = cmd->args[i];
-		char *cleaned = trim_outer_quotes(arg);
-
-		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
-		{
-			free(cmd->args[i]);
-			cmd->args[i] = cleaned;
-		}
-		else
-		{
-			char *expanded = expand_variables(cleaned);
-			free(cleaned);
-			free(cmd->args[i]);
-			cmd->args[i] = expanded;
-		}
-		i++;
+		ft_putstr_fd("\033[2K\r", STDERR_FILENO);
+		rl_on_new_line();
+		rl_redisplay();
 	}
-	cmd->cmd = cmd->args[0];
-	return (cmd);
 }
 
-void execute_echo(t_cmd *cmd, int arg_count)
+int	count_args(char **args)
 {
-    int i = 1;
-    int n_flag = 0;
-    
-    if (arg_count > 1 && ft_strncmp(cmd->args[1], "-n", 3) == 0)
-    {
-        n_flag = 1;
-        i = 2;
-    }
-    while (cmd->args[i])
-    {
-        printf("%s", cmd->args[i]);
-        if (cmd->args[i + 1])
-            printf(" ");
-        i++;
-    }
-    if (!n_flag)
-        printf("\n");
+	int	count;
+
+	count = 0;
+	if (args == NULL)
+		return (0);
+	while (args[count])
+		count++;
+	return (count);
 }
 
-int main(void)
+int	main(void)
 {
 	char	*input;
-	char	*cwd;
 	t_cmd	*cmd;
+	int		arg_count;
 
-	int arg_count;
-
-	arg_count = 0;
-
+	rl_catch_signals = 0;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
 	while (1)
 	{
-		input = readline("$> ");
-		if (!input)
+		input = get_input_with_continuation();
+		if (input == NULL)
 			break;
-		if (ft_strlen(input) > 0)
-		{
-			add_history(input);			
-			while (check_unclosed_quotes(input))
-			{
-				char *continued = readline("> ");
-				if (!continued)
-					break;			
-				char *tmp = input;
-				input = ft_strjoin_flex(tmp, "\n", 1);
-				input = ft_strjoin_flex(input, continued, 1);
-				free(continued);
-			}
-		}			
 		cmd = parse_input(input);
-		if (!cmd)
+		if (cmd == NULL)
 		{
 			free(input);
 			continue;
 		}
-        while (cmd->args[arg_count])
-            arg_count++;	
-		if (ft_strncmp(cmd->cmd, "exit", 5) == 0)
-			break;
-		else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
-		{
-			cwd = getcwd(NULL, 0);
-			printf("%s\n", cwd);
-			free(cwd);
-		}
-		else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
-		{
-			if (!cmd->args[1])
-				chdir(getenv("HOME"));
-			else if (chdir(cmd->args[1]) != 0)
-				perror("cd");
-		}
-		else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
-		{
-			// if (ft_strlen(input) < 5)
-			// 	printf("\n");
-			// else if (ft_strncmp(cmd->args[1], "-n", 3) == 0)
-			// 	printf("%s", input + 7);
-			// else
-			// 	printf("%s\n", input + 5);
-			execute_echo(cmd, arg_count);
-		}
-		else
-			printf("zsh: command not found: %s\n", cmd->cmd);
-		free_cmd(cmd);
-		free(input);
+		arg_count = count_args(cmd->args);
+		process_args(cmd, g_last_exit_status);
+		g_last_exit_status = process_command(cmd, arg_count);
+		cleanup(cmd, input);
 	}
-	free_cmd(cmd);
-	free(input);
-	rl_clear_history();
-	return 0;
+	final_cleanup(input);
+	return (g_last_exit_status);
 }
