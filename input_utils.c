@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/16 17:33:59 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/18 23:09:42 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,15 @@ void	process_args(t_cmd *cmd, int last_exit_status)
 void	free_cmd(t_cmd *cmd)
 {
 	if (!cmd)
-		return;
+		return ;
 	if (cmd->args)
 		free_split(cmd->args);
 	if (cmd->cmd)
 		free(cmd->cmd);
+	if (cmd->infile)
+		free(cmd->infile);
+	if (cmd->outfile)
+		free(cmd->outfile);
 	free(cmd);
 }
 
@@ -64,3 +68,29 @@ void	final_cleanup(char *input)
 	rl_clear_history();
 }
 
+int	count_argument_tokens(char **tokens)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (!ft_strcmp(tokens[i], "<") || !ft_strcmp(tokens[i], ">")
+			|| !ft_strcmp(tokens[i], ">>"))
+		{
+			if (tokens[i + 1])
+				i += 2;
+			else
+			{
+				printf("syntax error near unexpected token `newline'\n");
+				return (-1);
+			}
+			continue ;
+		}
+		count++;
+		i++;
+	}
+	return (count);
+}

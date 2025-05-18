@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 14:36:48 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/18 22:52:17 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,29 @@
 # include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-#include <signal.h>
-#include <sys/wait.h>
+# include <signal.h>
+# include <sys/wait.h>
 
 /* Quotes */
-typedef struct	s_cmd
+typedef struct s_cmd
 {
 	char	*cmd;
 	char	**args;
 	bool	double_quote;
+	char	*infile;
+	char	*outfile;
+	bool	append;
 }				t_cmd;
 
 bool	check_unclosed_quotes(const char *str);
 char	*expand_variables(const char *arg, int last_exit_status);
+void	handle_variable(char **result, const char *arg, int *i);
 char	*remove_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
 
 /* Pipes */
 
-typedef struct	s_pipex
+typedef struct s_pipex
 {
 	int		i;
 	int		pipefd[2];
@@ -63,6 +67,10 @@ void	process_args(t_cmd *cmd, int last_exit_status);
 void	free_cmd(t_cmd *cmd);
 void	cleanup(t_cmd *cmd, char *input);
 void	final_cleanup(char *input);
+int		count_argument_tokens(char **tokens);
+int		redirect_io(t_cmd *cmd, int *saved_fds);
+void	init_cmd(t_cmd *cmd);
+void	fill_cmd(t_cmd *cmd, char **input);
 
 /* Buildins */
 
