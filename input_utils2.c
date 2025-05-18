@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/18 23:11:30 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/18 23:23:49 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int	redirect_io(t_cmd *cmd, int *saved_fds)
 {
 	if (cmd->infile && redirect_input(cmd, saved_fds))
 		return (1);
-	if (cmd->outfile && redirect_output(cmd, saved_fds))
+	else if (cmd->outfile && redirect_output(cmd, saved_fds))
 		return (1);
 	return (0);
 }

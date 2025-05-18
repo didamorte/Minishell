@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/18 21:36:44 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/18 23:41:54 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,11 +109,13 @@ int	process_command(t_cmd *cmd, int arg_count)
 	void	(*original_sigint)(int);
 	int		saved_fds[4];
 
-	saved_fds[0] = dup(STDIN_FILENO);
-	saved_fds[1] = dup(STDOUT_FILENO);
-	saved_fds[2] = -1;
-	saved_fds[3] = -1;
-	redirect_io(cmd, saved_fds);
+	init_fds(saved_fds);
+
+	if (redirect_io(cmd, saved_fds))
+	{
+		close_fds(saved_fds);
+		return (1);
+	}
 	original_sigint = signal(SIGINT, SIG_IGN);
 	original_sigquit = signal(SIGQUIT, SIG_IGN);
 	status = chose_buildin(cmd, arg_count);
@@ -123,9 +125,6 @@ int	process_command(t_cmd *cmd, int arg_count)
 	dup2(saved_fds[1], STDOUT_FILENO);
 	close(saved_fds[0]);
 	close(saved_fds[1]);
-	if (saved_fds[2] != -1)
-		close(saved_fds[2]);
-	if (saved_fds[3] != -1)
-		close(saved_fds[3]);
+	close_fds(saved_fds);
 	return (status);
 }
