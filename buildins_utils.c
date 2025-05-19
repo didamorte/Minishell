@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 16:20:12 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/19 15:19:51 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,4 @@ int	execute_child_process(char *path, char *cmd, char	**args)
 		perror("");
 	}
 	return (result);
-}
-
-int	handle_command_not_found(char *cmd)
-{
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
-	return (127);
 }

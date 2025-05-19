@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 14:02:18 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/19 16:41:02 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,20 @@
 
 int	g_last_exit_status = 0;
 
+int	handle_command_not_found(char *cmd)
+{
+	if (!ft_strcmp(cmd, "$?"))
+		ft_putstr_fd(ft_itoa(g_last_exit_status), 2);
+	else
+		ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
+	return (127);
+}
+
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	write(1, "^C\n", 3);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
