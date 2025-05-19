@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/18 23:23:49 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/19 22:14:14 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,14 @@ static int	redirect_output(t_cmd *cmd, int *saved_fds)
 
 int	redirect_io(t_cmd *cmd, int *saved_fds)
 {
-	if (cmd->infile && redirect_input(cmd, saved_fds))
+	if (cmd->has_heredoc)
+	{
+		if (handle_heredoc(cmd, saved_fds))
+			return (1);
+	}
+	else if (cmd->infile && redirect_input(cmd, saved_fds))
 		return (1);
-	else if (cmd->outfile && redirect_output(cmd, saved_fds))
+	if (cmd->outfile && redirect_output(cmd, saved_fds))
 		return (1);
 	return (0);
 }
@@ -61,6 +66,8 @@ void	init_cmd(t_cmd *cmd)
 	cmd->infile = NULL;
 	cmd->outfile = NULL;
 	cmd->append = false;
+	cmd->has_heredoc = false;
+	cmd->heredoc_delimiter = NULL;
 }
 
 void	fill_cmd(t_cmd *cmd, char **input)
@@ -79,6 +86,13 @@ void	fill_cmd(t_cmd *cmd, char **input)
 		{
 			cmd->append = !ft_strcmp(input[i], ">>");
 			cmd->outfile = ft_strdup(input[++i]);
+		}
+		else if (!ft_strcmp(input[i], "<<") && input[i + 1])
+		{
+			cmd->has_heredoc = true;
+			if (cmd->heredoc_delimiter)
+				free(cmd->heredoc_delimiter);
+			cmd->heredoc_delimiter = ft_strdup(input[++i]);
 		}
 		else
 			cmd->args[argc++] = ft_strdup(input[i]);

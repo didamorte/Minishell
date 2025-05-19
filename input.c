@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/18 23:41:54 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/19 00:11:45 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ int	process_command(t_cmd *cmd, int arg_count)
 	int		saved_fds[4];
 
 	init_fds(saved_fds);
-
 	if (redirect_io(cmd, saved_fds))
 	{
 		close_fds(saved_fds);

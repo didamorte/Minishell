@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/18 23:09:42 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/19 21:55:05 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	free_cmd(t_cmd *cmd)
 		free(cmd->infile);
 	if (cmd->outfile)
 		free(cmd->outfile);
+	if (cmd->heredoc_delimiter)
+		free(cmd->heredoc_delimiter);
 	free(cmd);
 }
 
