@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:04:22 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/21 14:31:47 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:11:45 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ bool	check_unclosed_quotes(const char *str)
 	return (in_quote);
 }
 
-static char	*append_char(char *result, char c)
+char	*append_char(char *result, char c)
 {
 	char	*new_str;
 
@@ -64,13 +64,12 @@ static char	*append_char(char *result, char c)
 	return (new_str);
 }
 
-static char	*expand_variable(char *result, const char *arg, int *i)
+char	*expand_variable(char *result, const char *arg, int *i)
 {
 	int		start;
 	char	*var;
 	char	*value;
 
-	(*i)++;
 	start = *i;
 	while (arg[*i] && (ft_isalnum(arg[*i]) || arg[*i] == '_'))
 		(*i)++;
@@ -84,7 +83,6 @@ static char	*expand_variable(char *result, const char *arg, int *i)
 
 char	*expand_variables(const char *arg, int last_exit_status)
 {
-	char	*exit_code;
 	char	*result;
 	int		i;
 
@@ -97,19 +95,10 @@ char	*expand_variables(const char *arg, int last_exit_status)
 			result = append_char(result, arg[i + 1]);
 			i += 2;
 		}
-		else if (arg[i] == '$' && arg[i + 1])
+		else if (arg[i] == '$')
 		{
-			if (arg[i + 1] == '?')
-			{
-				exit_code = ft_itoa(last_exit_status);
-				result = ft_strjoin_flex(result, exit_code, 1);
-				free(exit_code);
-				i += 2;
-			}
-			else if (ft_isalnum(arg[i + 1]) || arg[i + 1] == '_')
-				result = expand_variable(result, arg, &i);
-			else
-				result = append_char(result, arg[i++]);
+			result = handle_variable_expansion(result, arg, &i,
+					last_exit_status);
 		}
 		else
 			result = append_char(result, arg[i++]);

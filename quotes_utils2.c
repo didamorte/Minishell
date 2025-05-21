@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 22:01:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/21 14:28:51 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:05:55 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,4 +87,28 @@ char	*single_quotes(const char *str)
 	}
 	res[j] = '\0';
 	return (res);
+}
+
+char	*handle_variable_expansion(char *result, const char *arg, int *i,
+		int last_exit_status)
+{
+	char	*exit_code;
+
+	if (arg[*i + 1] == '?')
+	{
+		exit_code = ft_itoa(last_exit_status);
+		result = ft_strjoin_flex(result, exit_code, 1);
+		free(exit_code);
+		(*i) += 2;
+	}
+	else if (ft_isalnum(arg[*i + 1]) || arg[*i + 1] == '_')
+	{
+		(*i)++;
+		result = expand_variable(result, arg, i);
+	}
+	else
+	{
+		result = append_char(result, arg[(*i)++]);
+	}
+	return (result);
 }

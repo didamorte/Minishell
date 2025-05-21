@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/21 14:28:16 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:02:42 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ typedef struct s_cmd
 
 bool	check_unclosed_quotes(const char *str);
 char	*expand_variables(const char *arg, int last_exit_status);
+char	*handle_variable_expansion(char *result, const char *arg, int *i,
+			int last_exit_status);
+char	*expand_variable(char *result, const char *arg, int *i);
+char	*append_char(char *result, char c);
 char	*remove_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
 char	*double_quotes(const char *str);

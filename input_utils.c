@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 22:29:54 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:36:18 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,7 @@ void	process_args(t_cmd *cmd, int last_exit_status)
 	while (cmd->args[i])
 	{
 		arg = cmd->args[i];
-		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
-			cleaned = single_quotes(arg);
-		else
-			cleaned = remove_quotes(arg);
+		cleaned = remove_quotes(arg);
 		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
 			cmd->args[i] = cleaned;
 		else
