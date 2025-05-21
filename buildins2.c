@@ -6,11 +6,19 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:01:35 by diogribe          #+#    #+#             */
-/*   Updated: 2025/04/30 15:47:17 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/20 22:35:44 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_env_match(char *env, char *name)
+{
+	size_t	len;
+
+	len = ft_strlen(name);
+	return (ft_strncmp(env, name, len) == 0 && env[len] == '=');
+}
 
 int	handle_export(char **args)
 {
@@ -36,6 +44,8 @@ int	handle_export(char **args)
 		}
 		i++;
 	}
+	if (is_there_invalid_identifiers(args))
+		result = 1;
 	return (result);
 }
 

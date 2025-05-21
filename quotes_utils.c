@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:04:22 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/18 12:30:01 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 15:32:34 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,18 @@
 
 char	*remove_quotes(const char *str)
 {
-	char	*result;
-	int		i = 0;
-	int		j = 0;
-	int		len;
+	int	i;
 
-	if (!str)
-		return (NULL);
-	len = ft_strlen(str);
-	result = malloc(len + 1);
-	if (!result)
-		return (NULL);
+	i = 0;
 	while (str[i])
 	{
-		if (str[i] == '\\' && str[i + 1])
-		{
-			result[j++] = str[i + 1];
-			i += 2;
-		}
-		else if (str[i] == '\'' || str[i] == '"')
-			i++;
-		else
-			result[j++] = str[i++];
+		if (str[i] == '\'' && str[i + 1])
+			return (single_quotes(str));
+		else if (str[i] == '"' && str[i + 1])
+			return (double_quotes(str));
+		i++;
 	}
-	result[j] = '\0';
-	return (result);
+	return (ft_strdup(str));
 }
 
 bool	check_unclosed_quotes(const char *str)
@@ -67,11 +54,11 @@ bool	check_unclosed_quotes(const char *str)
 	return (in_quote);
 }
 
-static char *append_char(char *result, char c)
+static char	*append_char(char *result, char c)
 {
-	char *new_str;
+	char	*new_str;
 
-	new_str = ft_strjoin_flex(result, (char[2]){c, 0}, 1);
+	new_str = ft_strjoin_flex(result, (char [2]){c, 0}, 1);
 	if (!new_str)
 		exit(EXIT_FAILURE);
 	return (new_str);
@@ -97,6 +84,7 @@ static char	*expand_variable(char *result, const char *arg, int *i)
 
 char	*expand_variables(const char *arg, int last_exit_status)
 {
+	char	*exit_code;
 	char	*result;
 	int		i;
 
@@ -113,7 +101,7 @@ char	*expand_variables(const char *arg, int last_exit_status)
 		{
 			if (arg[i + 1] == '?')
 			{
-				char *exit_code = ft_itoa(last_exit_status);
+				exit_code = ft_itoa(last_exit_status);
 				result = ft_strjoin_flex(result, exit_code, 1);
 				free(exit_code);
 				i += 2;

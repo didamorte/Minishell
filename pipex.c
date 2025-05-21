@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/06 16:20:59 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:28:38 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	free_split(char **arr)
 
 	i = 0;
 	if (arr == NULL)
-		return;
+		return ;
 	while (arr[i] != NULL)
 	{
 		free(arr[i]);

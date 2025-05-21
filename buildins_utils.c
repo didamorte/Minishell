@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/19 15:19:51 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/20 20:05:05 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int	validate_exit_args(char **args, int arg_count)
 	}
 	while (code_str[i] && is_valid)
 	{
-		if (!ft_isdigit(code_str[i]))
+		if (!ft_isdigit(code_str[i]) && !ft_is_plus_minus(code_str[i]))
 			is_valid = 0;
 		i++;
 	}
@@ -102,4 +102,20 @@ int	execute_child_process(char *path, char *cmd, char	**args)
 		perror("");
 	}
 	return (result);
+}
+
+bool	is_valid_identifier(const char *s)
+{
+	int	i;
+
+	if (!ft_isalpha(s[0]) && s[0] != '_')
+		return (false);
+	i = 1;
+	while (s[i] && s[i] != '=')
+	{
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (false);
+		i++;
+	}
+	return (true);
 }
