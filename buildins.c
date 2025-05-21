@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 14:35:16 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:27:32 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	handle_pwd(void)
 	return (result);
 }
 
-int	handle_cd(char **args)
+int	handle_cd(char **args, int arg_count)
 {
 	char	*path;
 	char	*home;
@@ -75,19 +75,22 @@ int	handle_cd(char **args)
 	path = args[1];
 	home = NULL;
 	result = 0;
+	if (arg_count > 2)
+		return (ft_putstr_fd("minishel: cd: too many arguments\n", 2), 1);
 	if (!path)
 	{
 		home = getenv("HOME");
 		if (!home)
-		{
-			write(2, "cd: HOME not set\n", 17);
-			return (1);
-		}
+			return (write(2, "cd: HOME not set\n", 17), 1);
 		path = home;
 	}
 	result = chdir(path);
 	if (result != 0)
-		perror("minishell: cd");
+	{
+		write(2, "minishell: cd: ", 15);
+		perror(path);
+		result = 1;
+	}
 	return (result);
 }
 

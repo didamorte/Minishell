@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/19 16:41:02 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/20 21:16:15 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,12 +80,12 @@ int	main(void)
 	{
 		input = get_input_with_continuation();
 		if (input == NULL)
-			break;
+			break ;
 		cmd = parse_input(input);
 		if (cmd == NULL)
 		{
 			free(input);
-			continue;
+			continue ;
 		}
 		arg_count = count_args(cmd->args);
 		process_args(cmd, g_last_exit_status);

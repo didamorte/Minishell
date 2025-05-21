@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 14:36:48 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:28:16 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 # include <stdbool.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-#include <signal.h>
-#include <sys/wait.h>
+# include <signal.h>
+# include <sys/wait.h>
 
 /* Quotes */
-typedef struct	s_cmd
+typedef struct s_cmd
 {
 	char	*cmd;
 	char	**args;
@@ -33,10 +33,12 @@ bool	check_unclosed_quotes(const char *str);
 char	*expand_variables(const char *arg, int last_exit_status);
 char	*remove_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
+char	*double_quotes(const char *str);
+char	*single_quotes(const char *str);
 
 /* Pipes */
 
-typedef struct	s_pipex
+typedef struct s_pipex
 {
 	int		i;
 	int		pipefd[2];
@@ -68,7 +70,7 @@ void	final_cleanup(char *input);
 
 int		handle_exit(char **args, int arg_count);
 int		handle_pwd(void);
-int		handle_cd(char **args);
+int		handle_cd(char **args, int arg_count);
 int		handle_echo(t_cmd *cmd, int arg_count);
 int		handle_export(char **args);
 int		handle_unset(char **args);
@@ -85,10 +87,13 @@ int		execute_child_process(char *path, char *cmd, char	**args);
 int		handle_command_not_found(char *cmd);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);
+int		is_env_match(char *env, char *name);
 int		unset_env_var(char *name);
 void	swap_env_vars(char **a, char **b);
 void	skip_var_in_copy(char **new_env, char *name);
 char	*ft_strjoin_triple(char *s1, char *s2, char *s3);
 int		is_valid_n_flag(const char *arg);
+bool	is_there_invalid_identifiers(char **args);
+bool	is_valid_identifier(const char *s);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:39:05 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/16 17:58:10 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/20 22:36:42 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ void	copy_and_replace_var(char **new_env, char *name, char *new_var)
 	replaced = 0;
 	while (environ[i])
 	{
-		if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0 &&
-			environ[i][ft_strlen(name)] == '=')
+		if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0
+			&& environ[i][ft_strlen(name)] == '=')
 		{
 			new_env[j++] = ft_strdup(new_var);
 			replaced = 1;
@@ -127,16 +127,26 @@ int	unset_env_var(char *name)
 {
 	extern char	**environ;
 	char		**new_env;
-	int			count;
+	int			i;
+	int			j;
 
-	count = 0;
-	while (environ[count])
-		count++;
-	new_env = malloc((count + 1) * sizeof(char *));
+	i = 0;
+	while (environ[i] && !is_env_match(environ[i], name))
+		i++;
+	if (!environ[i])
+		return (0);
+	i = 0;
+	while (environ[i])
+		i++;
+	new_env = malloc(sizeof(char *) * i);
 	if (!new_env)
 		return (1);
-	skip_var_in_copy(new_env, name);
-	free_split(environ);
+	i = -1;
+	j = 0;
+	while (environ[++i])
+		if (!is_env_match(environ[i], name))
+			new_env[j++] = ft_strdup(environ[i]);
+	new_env[j] = NULL;
 	environ = new_env;
 	return (0);
 }
