@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/21 15:35:56 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/01 19:37:32 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,10 @@
 
 int	g_last_exit_status = 0;
 
-int	handle_command_not_found(char *cmd)
-{
-	if (!ft_strcmp(cmd, "$?"))
-		ft_putstr_fd(ft_itoa(g_last_exit_status), 2);
-	else
-		ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
-	return (127);
-}
-
 void	handle_sigint(int sig)
 {
 	(void)sig;
-	write(1, "^C\n", 3);
+	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -70,8 +60,6 @@ int	count_args(char **args)
 int	main(void)
 {
 	char	*input;
-	t_cmd	*cmd;
-	int		arg_count;
 
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
@@ -81,16 +69,16 @@ int	main(void)
 		input = get_input_with_continuation();
 		if (input == NULL)
 			break ;
-		cmd = parse_input(input);
-		if (cmd == NULL)
+		if (ft_strchr(input, '|'))
 		{
-			free(input);
-			continue ;
+			if (!handle_pipeline_input(input))
+				continue ;
 		}
-		arg_count = count_args(cmd->args);
-		process_args(cmd, g_last_exit_status);
-		g_last_exit_status = process_command(cmd, arg_count);
-		cleanup(cmd, input);
+		else
+		{
+			if (!handle_single_command_input(input))
+				continue ;
+		}
 	}
 	final_cleanup(input);
 	return (g_last_exit_status);
