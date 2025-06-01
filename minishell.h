@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/19 21:54:23 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/01 16:19:01 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/wait.h>
+
+extern int	g_last_exit_status;
 
 /* Quotes */
 typedef struct s_cmd
@@ -42,16 +44,16 @@ char	*ft_strjoin_flex(char *s1, char *s2, int flag);
 
 /* Pipes */
 
-typedef struct s_pipex
-{
-	int		i;
-	int		pipefd[2];
-	int		prev_fd;
-	int		status;
-	pid_t	pid;
-	char	**args;
-	char	*trimmed;
-}				t_pipex;
+// typedef struct s_pipex
+// {
+// 	int		i;
+// 	int		pipefd[2];
+// 	int		prev_fd;
+// 	int		status;
+// 	pid_t	pid;
+// 	char	**args;
+// 	char	*trimmed;
+// }				t_pipex;
 
 /* int		ft_pipes(char **cmds);
 void	pipe_child(t_pipex *p, char **cmds); */
@@ -62,6 +64,8 @@ void	free_split(char **arr);
 char	*get_input_with_continuation(void);
 t_cmd	*parse_input(char *input);
 int		process_command(t_cmd *cmd, int arg_count);
+int		count_args(char **args);
+int		chose_buildin(t_cmd *cmd, int arg_count);
 
 /* Input utils */
 
@@ -103,5 +107,16 @@ void	swap_env_vars(char **a, char **b);
 void	skip_var_in_copy(char **new_env, char *name);
 char	*ft_strjoin_triple(char *s1, char *s2, char *s3);
 int		is_valid_n_flag(const char *arg);
+
+/* Pipeline*/
+
+t_cmd	**parse_pipeline(char *input);
+int		count_segments(char **segments);
+void	exec_or_builtin(t_cmd *cmd);
+int		execute_pipeline(t_cmd **cmds);
+void	free_pipeline(t_cmd **pipeline);
+int		create_pipe_if_needed(t_cmd **cmds, int pipefd[2], int i);
+int		fork_child(t_cmd **cmds, int i, int prev_read, int pipefd[2]);
+void	close_unused_fds(t_cmd **cmds, int i, int *prev_read, int pipefd[2]);
 
 #endif

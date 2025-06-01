@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/18 17:24:52 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/05/24 22:58:33 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int	main(void)
 {
 	char	*input;
 	t_cmd	*cmd;
+	t_cmd	**pipeline_cmds;
 	int		arg_count;
 
 	rl_catch_signals = 0;
@@ -71,16 +72,31 @@ int	main(void)
 		input = get_input_with_continuation();
 		if (input == NULL)
 			break;
-		cmd = parse_input(input);
-		if (cmd == NULL)
+		if (ft_strchr(input, '|'))
 		{
+			pipeline_cmds = parse_pipeline(input);
+			if (!pipeline_cmds)
+			{
+				free(input);
+				continue;
+			}
+			g_last_exit_status = execute_pipeline(pipeline_cmds);
+			free_pipeline(pipeline_cmds);
 			free(input);
-			continue;
 		}
-		arg_count = count_args(cmd->args);
-		process_args(cmd, g_last_exit_status);
-		g_last_exit_status = process_command(cmd, arg_count);
-		cleanup(cmd, input);
+		else
+		{
+			cmd = parse_input(input);
+			if (cmd == NULL)
+			{
+				free(input);
+				continue;
+			}
+			arg_count = count_args(cmd->args);
+			process_args(cmd, g_last_exit_status);
+			g_last_exit_status = process_command(cmd, arg_count);
+			cleanup(cmd, input);
+		}
 	}
 	final_cleanup(input);
 	return (g_last_exit_status);
