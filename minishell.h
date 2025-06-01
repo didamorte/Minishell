@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 16:19:01 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/01 19:39:05 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,6 @@ void	handle_variable(char **result, const char *arg, int *i);
 char	*remove_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
 
-/* Pipes */
-
-// typedef struct s_pipex
-// {
-// 	int		i;
-// 	int		pipefd[2];
-// 	int		prev_fd;
-// 	int		status;
-// 	pid_t	pid;
-// 	char	**args;
-// 	char	*trimmed;
-// }				t_pipex;
-
-/* int		ft_pipes(char **cmds);
-void	pipe_child(t_pipex *p, char **cmds); */
 void	free_split(char **arr);
 
 /* Input */
@@ -66,6 +51,8 @@ t_cmd	*parse_input(char *input);
 int		process_command(t_cmd *cmd, int arg_count);
 int		count_args(char **args);
 int		chose_buildin(t_cmd *cmd, int arg_count);
+int		handle_pipeline_input(char *input);
+int		handle_single_command_input(char *input);
 
 /* Input utils */
 

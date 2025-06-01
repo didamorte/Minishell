@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 16:28:11 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/01 19:43:04 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,9 @@ t_cmd	**parse_pipeline(char *input)
 {
 	char	**args;
 	t_cmd	**cmds;
-	int		i;
 	int		count;
 
 	args = ft_split(input, '|');
-	i = 0;
 	if (!args)
 		return (NULL);
 	count = count_args(args);
@@ -64,7 +62,6 @@ t_cmd	**parse_pipeline(char *input)
 		free_split(args);
 		return (NULL);
 	}
-	cmds[i] = NULL;
 	free_split(args);
 	return (cmds);
 }
