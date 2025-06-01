@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 19:39:05 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/01 20:07:51 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,12 @@ bool	check_unclosed_quotes(const char *str);
 char	*expand_variables(const char *arg, int last_exit_status);
 void	handle_variable(char **result, const char *arg, int *i);
 char	*remove_quotes(const char *str);
+char	*single_quotes(const char *str);
+char	*double_quotes(const char *str);
+char	*handle_variable_expansion(char *result, const char *arg, int *i,
+		int last_exit_status);
+char	*expand_variable(char *result, const char *arg, int *i);
+char	*append_char(char *result, char c);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
 
 void	free_split(char **arr);
