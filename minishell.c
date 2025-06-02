@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 21:16:15 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:43:13 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,11 +86,17 @@ int	main(void)
 		{
 			free(input);
 			continue ;
+			break ;
+		if (ft_strchr(input, '|'))
+		{
+			if (!handle_pipeline_input(input))
+				continue ;
 		}
-		arg_count = count_args(cmd->args);
-		process_args(cmd, g_last_exit_status);
-		g_last_exit_status = process_command(cmd, arg_count);
-		cleanup(cmd, input);
+		else
+		{
+			if (!handle_single_command_input(input))
+				continue ;
+		}
 	}
 	final_cleanup(input);
 	return (g_last_exit_status);

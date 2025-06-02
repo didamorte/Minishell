@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/21 14:28:38 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:45:25 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,57 +28,65 @@ void	free_split(char **arr)
 	free(arr);
 }
 
-/* void	pipe_child(t_pipex *p, char **cmds)
+static int	fill_cmds_array(t_cmd **cmds, char **args)
 {
-	if (p->prev_fd != -1)
+	int	i;
+
+	i = 0;
+	while (args[i])
 	{
-		dup2(p->prev_fd, 0);
-		close(p->prev_fd);
+		cmds[i] = parse_input(args[i]);
+		if (!cmds[i])
+			return (-1);
+		i++;
 	}
-	if (cmds[p->i + 1])
-	{
-		close(p->pipefd[0]);
-		dup2(p->pipefd[1], 1);
-		close(p->pipefd[1]);
-	}
-	p->trimmed = ft_strtrim(cmds[p->i], " ");
-	p->args = ft_split(p->trimmed, ' ');
-	free(p->trimmed);
-	if (!p->args)
-		exit(1);
-	execvp(p->args[0], p->args);
-	perror("execvp");
-	free_split(p->args);
-	exit(1);
+	cmds[i] = NULL;
+	return (0);
 }
 
-int	ft_pipes(char **cmds)
+t_cmd	**parse_pipeline(char *input)
 {
-	t_pipex	p;
+	char	**args;
+	t_cmd	**cmds;
+	int		count;
 
-	p.i = -1;
-	p.prev_fd = -1;
-	while (cmds[++p.i])
+	args = ft_split(input, '|');
+	if (!args)
+		return (NULL);
+	count = count_args(args);
+	cmds = malloc(sizeof(t_cmd *) * (count + 1));
+	if (!cmds)
+		return (NULL);
+	if (fill_cmds_array(cmds, args) < 0)
 	{
-		if (cmds[p.i + 1] && pipe(p.pipefd) == -1)
-			return(perror("pipe"), 1);
-		if (!(p.pid = fork()))
-			return(perror("fork"), 1);
-		else if (p.pid == 0)
-			pipe_child(&p, cmds);
-		else
-		{
-			if (p.prev_fd != -1)
-				close(p.prev_fd);
-			if (cmds[p.i + 1])
-				close(p.pipefd[1]);
-			if (cmds[p.i + 1])
-				p.prev_fd = p.pipefd[0];
-			else
-				p.prev_fd = -1;
-			waitpid(p.pid, &p.status, 0);
-			g_exit_status = WEXITSTATUS(p.status);
-		}
+		free_split(args);
+		return (NULL);
 	}
-	return(0);
-} */
+	free_split(args);
+	return (cmds);
+}
+
+int	execute_pipeline(t_cmd **cmds)
+{
+	int		i;
+	int		pipefd[2];
+	int		prev_read;
+	pid_t	pid;
+	int		status;
+
+	i = 0;
+	prev_read = -1;
+	while (cmds[i])
+	{
+		if (create_pipe_if_needed(cmds, pipefd, i))
+			return (1);
+		pid = fork_child(cmds, i, prev_read, pipefd);
+		if (pid < 0)
+			return (1);
+		close_unused_fds(cmds, i, &prev_read, pipefd);
+		i++;
+	}
+	while (i-- > 0)
+		wait(&status);
+	return (status);
+}
