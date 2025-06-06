@@ -11,7 +11,8 @@ SRCS := minishell.c quotes_utils.c quotes_utils2.c \
 		pipex.c buildins.c buildins_utils.c input.c \
 		input_utils.c buildins2.c buildins_utils2.c\
 		buildins_utils3.c input_utils2.c input_utils3.c \
-		pipex_utils.c pipex_utils1.c minishell_utils.c \
+		pipex_utils.c pipex_utils2.c minishell_utils.c \
+		pipex_utils3.c cleanups.c
 
 OBJS := $(SRCS:.c=.o)
 

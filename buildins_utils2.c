@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:39:05 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 22:36:42 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/03 19:02:52 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ int	print_sorted_env(void)
 	env_copy = copy_and_sort_env();
 	if (!env_copy)
 		return (1);
-	i = 0;
-	while (env_copy[i])
+	i = -1;
+	while (env_copy[i++])
 	{
 		ft_putstr_fd("declare -x ", 1);
 		len = ft_strchr(env_copy[i], '=') - env_copy[i];
@@ -89,7 +89,6 @@ int	print_sorted_env(void)
 		ft_putchar_fd('"', 1);
 		ft_putstr_fd(ft_strchr(env_copy[i], '=') + 1, 1);
 		ft_putendl_fd("\"", 1);
-		i++;
 	}
 	free_split(env_copy);
 	return (0);

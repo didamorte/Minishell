@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 19:36:46 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/01 19:41:39 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/02 17:38:37 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/02 15:43:13 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/06 21:01:52 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,7 @@ int	g_last_exit_status = 0;
 
 int	handle_command_not_found(char *cmd)
 {
-	if (!ft_strcmp(cmd, "$?"))
-		ft_putstr_fd(ft_itoa(g_last_exit_status), 2);
-	else
-		ft_putstr_fd(cmd, 2);
+	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": command not found\n", 2);
 	return (127);
 }
@@ -28,6 +25,7 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(1, "^C\n", 3);
+	g_last_exit_status = 130;
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -43,13 +41,17 @@ void	handle_sigquit(int sig)
 	if (pid == 0)
 	{
 		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		g_last_exit_status = 131;
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	else
+	else if (pid > 0)
 	{
-		ft_putstr_fd("\033[2K\r", STDERR_FILENO);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
+		{
+			g_last_exit_status = 131;
+		}
 		rl_on_new_line();
 		rl_redisplay();
 	}
@@ -70,8 +72,6 @@ int	count_args(char **args)
 int	main(void)
 {
 	char	*input;
-	t_cmd	*cmd;
-	int		arg_count;
 
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
@@ -80,12 +80,6 @@ int	main(void)
 	{
 		input = get_input_with_continuation();
 		if (input == NULL)
-			break ;
-		cmd = parse_input(input);
-		if (cmd == NULL)
-		{
-			free(input);
-			continue ;
 			break ;
 		if (ft_strchr(input, '|'))
 		{
@@ -98,6 +92,6 @@ int	main(void)
 				continue ;
 		}
 	}
-	final_cleanup(input);
+	final_cleanup(NULL);
 	return (g_last_exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 21:17:40 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/02 16:56:22 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ t_cmd	*parse_input(char *input)
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
+	init_cmd(cmd);
 	args = ft_split(input, ' ');
 	if (!args || !args[0])
 	{

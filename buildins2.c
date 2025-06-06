@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:01:35 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 22:35:44 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/03 19:00:20 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,12 @@ int	handle_env(char **args)
 	}
 	while (*env)
 	{
+		if (ft_strncmp(*env, "LINES=", 6) == 0
+			|| ft_strncmp(*env, "COLUMNS=", 8) == 0)
+		{
+			env++;
+			continue ;
+		}
 		eq_sign = ft_strchr(*env, '=');
 		if (eq_sign && eq_sign != *env)
 			ft_putendl_fd(*env, 1);

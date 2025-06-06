@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/19 22:14:14 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/03 18:32:20 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,13 @@ void	init_cmd(t_cmd *cmd)
 	cmd->heredoc_delimiter = NULL;
 }
 
-void	fill_cmd(t_cmd *cmd, char **input)
+/* void	fill_cmd(t_cmd *cmd, char **input)
 {
 	int	i;
 	int	argc;
 
 	i = 0;
-	argc = 0;
+	argc = 0; 
 	while (input[i])
 	{
 		if (!ft_strcmp(input[i], "<") && input[i + 1])
@@ -104,3 +104,4 @@ void	fill_cmd(t_cmd *cmd, char **input)
 	else
 		cmd->cmd = NULL;
 }
+ */
