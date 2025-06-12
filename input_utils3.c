@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 23:30:47 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/19 22:33:37 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/10 22:34:03 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,3 +53,48 @@ int	handle_heredoc(t_cmd *cmd, int *saved_fds)
 	dup2(saved_fds[2], STDIN_FILENO);
 	return (0);
 }
+
+char	*preprocess_input(const char *input)
+{
+	int		i = 0;
+	int		j = 0;
+	char	quote = 0;
+	char	*new_input = malloc(ft_strlen(input) * 3 + 1); // espaço extra
+
+	if (!new_input)
+		return (NULL);
+
+	while (input[i])
+	{
+		// Estado de aspas
+		if ((input[i] == '\'' || input[i] == '"') && (!quote || quote == input[i]))
+		{
+			if (!quote)
+				quote = input[i];
+			else
+				quote = 0;
+		}
+
+		// Heredoc ou append: << ou >>
+		if (!quote && (input[i] == '<' || input[i] == '>') && input[i + 1] == input[i])
+		{
+			new_input[j++] = ' ';
+			new_input[j++] = input[i++];
+			new_input[j++] = input[i++];
+			new_input[j++] = ' ';
+		}
+		// Operadores simples: < > |
+		else if (!quote && (input[i] == '<' || input[i] == '>' || input[i] == '|'))
+		{
+			new_input[j++] = ' ';
+			new_input[j++] = input[i++];
+			new_input[j++] = ' ';
+		}
+		else
+			new_input[j++] = input[i++];
+	}
+	new_input[j] = '\0';
+	return (new_input);
+}
+
+

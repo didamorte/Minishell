@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 19:43:04 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:20:45 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ int	execute_pipeline(t_cmd **cmds)
 	int		prev_read;
 	pid_t	pid;
 	int		status;
+	pid_t last_pid = -1;
+	int		exit_status = 1;
 
 	i = 0;
 	prev_read = -1;
@@ -83,10 +85,18 @@ int	execute_pipeline(t_cmd **cmds)
 		pid = fork_child(cmds, i, prev_read, pipefd);
 		if (pid < 0)
 			return (1);
+		if (cmds[i + 1] == NULL)  // último comando
+			last_pid = pid;
 		close_unused_fds(cmds, i, &prev_read, pipefd);
 		i++;
 	}
-	while (i-- > 0)
-		wait(&status);
-	return (status);
+	// while (i-- > 0)
+	// 	wait(&status);
+	// return (status);
+	while ((pid = wait(&status)) > 0)
+	{
+		if (pid == last_pid)
+			exit_status = WEXITSTATUS(status);
+	}
+	return exit_status;
 }

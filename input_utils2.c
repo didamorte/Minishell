@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/05/19 22:14:14 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/12 23:11:33 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 static int	redirect_input(t_cmd *cmd, int *saved_fds)
 {
+	if (access(cmd->infile, F_OK) != 0)
+	{
+		ft_putstr_fd("minishell: input redirection: No such file or directory\n", 2);
+		return (1);
+	}
 	saved_fds[2] = open(cmd->infile, O_RDONLY);
 	if (saved_fds[2] < 0)
 	{
@@ -68,6 +73,8 @@ void	init_cmd(t_cmd *cmd)
 	cmd->append = false;
 	cmd->has_heredoc = false;
 	cmd->heredoc_delimiter = NULL;
+	cmd->input_error = false;
+	
 }
 
 void	fill_cmd(t_cmd *cmd, char **input)
@@ -79,23 +86,46 @@ void	fill_cmd(t_cmd *cmd, char **input)
 	argc = 0;
 	while (input[i])
 	{
+		// printf("input[%d] = '%s'\n", i, input[i]);
 		if (!ft_strcmp(input[i], "<") && input[i + 1])
-			cmd->infile = ft_strdup(input[++i]);
-		else if ((!ft_strcmp(input[i], ">") || !ft_strcmp(input[i], ">>"))
-			&& input[i + 1])
 		{
+			if (cmd->infile)
+			{
+				free(cmd->infile);
+				cmd->infile = NULL;
+			}
+			cmd->infile = remove_quotes(input[++i]);
+			if(access(cmd->infile, F_OK) != 0)
+				cmd->input_error = true;
+		}
+		else if ((!ft_strcmp(input[i], ">") || !ft_strcmp(input[i], ">>")) && input[i + 1])
+		{
+			if (cmd->outfile)
+			{
+				/****************************************************************** */
+				int tmp_fd = open(cmd->outfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				if (tmp_fd >= 0)
+					close(tmp_fd);
+				/********************************************************************* */
+				free(cmd->outfile);
+				cmd->outfile = NULL;
+			}
 			cmd->append = !ft_strcmp(input[i], ">>");
-			cmd->outfile = ft_strdup(input[++i]);
+			cmd->outfile = remove_quotes(input[++i]);
 		}
 		else if (!ft_strcmp(input[i], "<<") && input[i + 1])
 		{
-			cmd->has_heredoc = true;
 			if (cmd->heredoc_delimiter)
+			{
 				free(cmd->heredoc_delimiter);
-			cmd->heredoc_delimiter = ft_strdup(input[++i]);
+				cmd->heredoc_delimiter = NULL;
+			}
+			cmd->has_heredoc = true;
+			cmd->heredoc_delimiter = remove_quotes(input[++i]);
 		}
 		else
-			cmd->args[argc++] = ft_strdup(input[i]);
+			cmd->args[argc++] = remove_quotes(input[i]);
+			// cmd->args[argc++] = ft_strdup(input[i]);
 		i++;
 	}
 	cmd->args[argc] = NULL;
@@ -104,3 +134,4 @@ void	fill_cmd(t_cmd *cmd, char **input)
 	else
 		cmd->cmd = NULL;
 }
+

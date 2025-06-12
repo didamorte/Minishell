@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 19:39:05 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/12 19:32:26 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_cmd
 	bool	append;
 	bool	has_heredoc;
 	char	*heredoc_delimiter;
+	bool	input_error;
 }				t_cmd;
 
 bool	check_unclosed_quotes(const char *str);
@@ -67,6 +68,7 @@ void	fill_cmd(t_cmd *cmd, char **input);
 void	init_fds(int *saved_fds);
 void	close_fds(int *saved_fds);
 int		handle_heredoc(t_cmd *cmd, int *saved_fds);
+char	*preprocess_input(const char *input);
 
 /* Buildins */
 
