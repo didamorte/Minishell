@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/16 17:35:55 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:46:12 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 
 extern int	g_last_exit_status;
 
-/* Quotes */
 typedef struct s_cmd
 {
 	char	*cmd;

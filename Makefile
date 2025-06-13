@@ -9,7 +9,7 @@ LIBFT_DIR	:= libft
 # Source Files
 
 SRCS := buildins.c buildins2.c buildins_utils.c buildins_utils2.c \
-        buildins_utils3.c buildins_utils4.c cleanups.c error.c error2.c \
+        buildins_utils3.c buildins_utils4.c cleanups.c error.c \
         input.c input_utils.c input_utils2.c input_utils3.c \
         input_utils4.c input_utils5.c minishell.c minishell_utils.c \
         pipex.c pipex_utils.c pipex_utils2.c pipex_utils3.c \
