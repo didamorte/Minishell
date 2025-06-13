@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:04:22 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/02 15:45:57 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/09 17:48:31 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ char	*expand_variable(char *result, const char *arg, int *i)
 	value = getenv(var);
 	if (value)
 		result = ft_strjoin_flex(result, value, 1);
+	else
+		result = ft_strjoin_flex(result, "", 1);
 	free(var);
 	return (result);
 }

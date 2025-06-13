@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/03 18:32:20 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/10 23:06:18 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,39 +69,3 @@ void	init_cmd(t_cmd *cmd)
 	cmd->has_heredoc = false;
 	cmd->heredoc_delimiter = NULL;
 }
-
-/* void	fill_cmd(t_cmd *cmd, char **input)
-{
-	int	i;
-	int	argc;
-
-	i = 0;
-	argc = 0; 
-	while (input[i])
-	{
-		if (!ft_strcmp(input[i], "<") && input[i + 1])
-			cmd->infile = ft_strdup(input[++i]);
-		else if ((!ft_strcmp(input[i], ">") || !ft_strcmp(input[i], ">>"))
-			&& input[i + 1])
-		{
-			cmd->append = !ft_strcmp(input[i], ">>");
-			cmd->outfile = ft_strdup(input[++i]);
-		}
-		else if (!ft_strcmp(input[i], "<<") && input[i + 1])
-		{
-			cmd->has_heredoc = true;
-			if (cmd->heredoc_delimiter)
-				free(cmd->heredoc_delimiter);
-			cmd->heredoc_delimiter = ft_strdup(input[++i]);
-		}
-		else
-			cmd->args[argc++] = ft_strdup(input[i]);
-		i++;
-	}
-	cmd->args[argc] = NULL;
-	if (argc > 0)
-		cmd->cmd = ft_strdup(cmd->args[0]);
-	else
-		cmd->cmd = NULL;
-}
- */
