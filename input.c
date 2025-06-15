@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/15 18:03:13 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:38:30 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,9 @@ int	process_command(t_cmd *cmd, int arg_count)
 	if (cmd->input_error)
 		return (1);
 	if (redirect_io(cmd, saved_fds) != 0)
-	{
 		return (1);
-	}
+	if (!cmd->cmd || cmd->cmd[0] == '\0')
+		return (0);
 	original_sigint = signal(SIGINT, SIG_IGN);
 	original_sigquit = signal(SIGQUIT, SIG_IGN);
 	status = chose_buildin(cmd, arg_count);
