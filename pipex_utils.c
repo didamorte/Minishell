@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:25:11 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/01 17:31:00 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:26:52 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,26 @@ int	is_builtin(char *cmd)
 		|| ft_strcmp(cmd, "env") == 0
 		|| ft_strcmp(cmd, "exit") == 0
 	);
+}
+
+char	**remove_quotes_array(char **args)
+{
+	int		i;
+	char	**clean_args;
+	int		count;
+
+	count = count_args(args);
+	i = 0;
+	clean_args = malloc(sizeof(char *) * (count + 1));
+	if (!clean_args)
+		return (NULL);
+	while (args[i])
+	{
+		clean_args[i] = remove_quotes(args[i]);
+		i++;
+	}
+	clean_args[i] = NULL;
+	return (clean_args);
 }
 
 void	exec_or_builtin(t_cmd *cmd)
@@ -48,11 +68,11 @@ void	exec_or_builtin(t_cmd *cmd)
 	{
 		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(cmd->cmd, 2);
-		exit(127);
+		exit(1);
 	}
-	execve(path, cmd->args, environ);
+	execve(path, remove_quotes_array(cmd->args), environ);
 	perror("minishell: execve");
-	exit(126);
+	exit(1);
 }
 
 void	free_pipeline(t_cmd **pipeline)

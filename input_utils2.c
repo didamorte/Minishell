@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/10 23:06:18 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:14:09 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,12 @@
 
 static int	redirect_input(t_cmd *cmd, int *saved_fds)
 {
+	if (access(cmd->infile, F_OK) != 0)
+	{
+		ft_putstr_fd("minishell: input redirection: ", 2);
+		ft_putstr_fd("No such file or directory\n", 2);
+		return (1);
+	}
 	saved_fds[2] = open(cmd->infile, O_RDONLY);
 	if (saved_fds[2] < 0)
 	{
@@ -47,6 +53,8 @@ static int	redirect_output(t_cmd *cmd, int *saved_fds)
 
 int	redirect_io(t_cmd *cmd, int *saved_fds)
 {
+	if (cmd->input_error)
+		return (1);
 	if (cmd->has_heredoc)
 	{
 		if (handle_heredoc(cmd, saved_fds))
@@ -68,4 +76,5 @@ void	init_cmd(t_cmd *cmd)
 	cmd->append = false;
 	cmd->has_heredoc = false;
 	cmd->heredoc_delimiter = NULL;
+	cmd->input_error = false;
 }
