@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils1.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:16:25 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/02 18:25:17 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:47:40 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,10 @@ static void	child_process(t_cmd **cmds, int i, int prev_read, int pipefd[2])
 		close(pipefd[1]);
 	}
 	init_fds(saved_fds);
-	redirect_io(cmds[i], saved_fds);
+	if (redirect_io(cmds[i], saved_fds) != 0)
+		exit (1);
+	if (cmds[i]->input_error)
+		exit(1);
 	exec_or_builtin(cmds[i]);
 	exit(1);
 }
@@ -70,6 +73,4 @@ void	close_unused_fds(t_cmd **cmds, int i, int *prev_read, int pipefd[2])
 		close(pipefd[1]);
 		*prev_read = pipefd[0];
 	}
-	else
-		*prev_read = -1;
 }

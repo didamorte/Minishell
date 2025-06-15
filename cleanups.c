@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanups.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 17:30:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/03 17:30:52 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 11:29:45 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ void	free_cmd(t_cmd *cmd)
 		free_split(cmd->args);
 	if (cmd->cmd)
 		free(cmd->cmd);
+	if (cmd->infile)
+		free(cmd->infile);
+	if (cmd->outfile)
+		free(cmd->outfile);
+	if (cmd->heredoc_delimiter)
+		free(cmd->heredoc_delimiter);
 	free(cmd);
 }
 

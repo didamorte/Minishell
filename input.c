@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/02 16:56:22 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 14:21:12 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,16 +62,32 @@ char	*get_input_with_continuation(void)
 	return (input);
 }
 
+void	parse_input_to_cmd(t_cmd *cmd, char **input)
+{
+	int	argcount;
+
+	argcount = count_argument_tokens(input);
+	init_cmd(cmd);
+	if (argcount < 0)
+		return ;
+	cmd->args = malloc(sizeof(char *) * (argcount + 1));
+	if (!cmd->args)
+		return ;
+	fill_cmd(cmd, input);
+}
+
 t_cmd	*parse_input(char *input)
 {
 	t_cmd	*cmd;
 	char	**args;
+	char	*preprocessed;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
-	init_cmd(cmd);
-	args = ft_split(input, ' ');
+	preprocessed = preprocess_input(input);
+	args = ft_split(preprocessed, ' ');
+	free(preprocessed);
 	if (!args || !args[0])
 	{
 		if (args)
@@ -79,11 +95,10 @@ t_cmd	*parse_input(char *input)
 		free(cmd);
 		return (NULL);
 	}
-	cmd->args = args;
-	cmd->cmd = ft_strdup(args[0]);
-	if (!cmd->cmd)
+	parse_input_to_cmd(cmd, args);
+	free_split(args);
+	if (!cmd->cmd && !(cmd->infile || cmd->outfile || cmd->has_heredoc))
 	{
-		free_split(args);
 		free(cmd);
 		return (NULL);
 	}
@@ -95,11 +110,24 @@ int	process_command(t_cmd *cmd, int arg_count)
 	int		status;
 	void	(*original_sigquit)(int);
 	void	(*original_sigint)(int);
+	int		saved_fds[4];
 
+	init_fds(saved_fds);
+	if (cmd->input_error)
+		return (1);
+	if (redirect_io(cmd, saved_fds) != 0)
+	{
+		return (1);
+	}
 	original_sigint = signal(SIGINT, SIG_IGN);
 	original_sigquit = signal(SIGQUIT, SIG_IGN);
 	status = chose_buildin(cmd, arg_count);
 	signal(SIGINT, original_sigint);
 	signal(SIGQUIT, original_sigquit);
+	dup2(saved_fds[0], STDIN_FILENO);
+	dup2(saved_fds[1], STDOUT_FILENO);
+	close(saved_fds[0]);
+	close(saved_fds[1]);
+	close_fds(saved_fds);
 	return (status);
 }

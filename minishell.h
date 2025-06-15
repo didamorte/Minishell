@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/06 21:30:27 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 14:22:31 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ typedef struct s_cmd
 	bool	append;
 	bool	has_heredoc;
 	char	*heredoc_delimiter;
+	bool	input_error;
 }				t_cmd;
+
+/* Quotes */
 
 bool	check_unclosed_quotes(const char *str);
 char	*expand_variables(const char *arg, int last_exit_status);
@@ -60,11 +63,17 @@ int		handle_single_command_input(char *input);
 /* Input utils */
 
 void	process_args(t_cmd *cmd, int last_exit_status);
+int		count_argument_tokens(char **tokens);
 int		redirect_io(t_cmd *cmd, int *saved_fds);
 void	init_cmd(t_cmd *cmd);
+void	fill_cmd(t_cmd *cmd, char **input);
 void	init_fds(int *saved_fds);
 void	close_fds(int *saved_fds);
 int		handle_heredoc(t_cmd *cmd, int *saved_fds);
+char	*preprocess_input(const char *input);
+bool	open_output_file(t_cmd *cmd);
+char	*process_and_format(const char *input, char *new_input);
+void	update_quote_state(char c, char *quote);
 
 /* Buildins */
 
@@ -83,7 +92,7 @@ int		handle_external(char *cmd, char	**args);
 char	*get_path(char *cmd);
 char	**env_to_array(void);
 int		validate_exit_args(char **args, int arg_count);
-int		execute_child_process(char *path, char *cmd, char	**args);
+int		execute_child_process(char *path, char	**args);
 int		handle_command_not_found(char *cmd);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);
@@ -95,6 +104,12 @@ char	*ft_strjoin_triple(char *s1, char *s2, char *s3);
 int		is_valid_n_flag(const char *arg);
 bool	is_there_invalid_identifiers(char **args);
 bool	is_valid_identifier(const char *s);
+void	setup_signals(void (**original_sigquit)(int),
+			void (**original_sigint)(int));
+void	restore_signals(void (*original_sigquit)(int),
+			void (*original_sigint)(int));
+int		check_file(char *path, char *cmd);
+int		run_external_cmd(char *path, char **args);
 
 /* Pipeline*/
 
@@ -118,5 +133,15 @@ void	free_cmd(t_cmd *cmd);
 void	cleanup(t_cmd *cmd, char *input);
 void	final_cleanup(char *input);
 void	free_split(char **arr);
+
+/* Error */
+
+int		error_print(char *cmd, char *msg, int code);
+int		error_denied(char *path, char *cmd);
+int		error_no_file(char *path, char *cmd);
+int		error_is_directory(char *path, char *cmd);
+int		error_cmd_not_found(char *path, char *cmd);
+int		error_syntax(char *token);
+int		error_unexpected_eof(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/21 14:27:32 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/13 22:06:35 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,31 +120,25 @@ int	handle_echo(t_cmd *cmd, int arg_count)
 	return (0);
 }
 
-int	handle_external(char *cmd, char	**args)
+int	handle_external(char *cmd, char **args)
 {
 	char	*path;
-	pid_t	pid;
 	int		status;
-	void	(*original_sigquit)(int);
-	void	(*original_sigint)(int);
 
 	path = get_path(cmd);
 	if (!path)
-		return (handle_command_not_found(cmd));
-	original_sigquit = signal(SIGQUIT, SIG_IGN);
-	original_sigint = signal(SIGINT, SIG_IGN);
-	pid = fork();
-	if (pid == 0)
 	{
-		signal(SIGQUIT, SIG_DFL);
-		signal(SIGINT, SIG_DFL);
-		if (execute_child_process(path, cmd, args) == -1)
-			exit(EXIT_FAILURE);
-		exit(EXIT_SUCCESS);
+		if (ft_strchr(cmd, '/'))
+			return (error_no_file(NULL, cmd));
+		return (error_cmd_not_found(NULL, cmd));
 	}
-	waitpid(pid, &status, 0);
-	signal(SIGQUIT, original_sigquit);
-	signal(SIGINT, original_sigint);
+	status = check_file(path, cmd);
+	if (status != 0)
+	{
+		free(path);
+		return (status);
+	}
+	status = run_external_cmd(path, args);
 	free(path);
-	return (WEXITSTATUS(status));
+	return (status);
 }
