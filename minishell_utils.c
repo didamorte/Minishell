@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 19:36:46 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/02 17:38:37 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:43:33 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int	handle_single_command_input(char *input)
 		free(input);
 		return (0);
 	}
-	arg_count = count_args(cmd->args);
 	process_args(cmd, g_last_exit_status);
+	arg_count = count_args(cmd->args);
 	g_last_exit_status = process_command(cmd, arg_count);
 	cleanup(cmd, input);
 	return (1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils3.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 23:30:47 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/02 17:30:52 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:28:22 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,27 @@ int	handle_heredoc(t_cmd *cmd, int *saved_fds)
 	saved_fds[2] = pipefd[0];
 	dup2(saved_fds[2], STDIN_FILENO);
 	return (0);
+}
+
+bool	open_output_file(t_cmd *cmd)
+{
+	int	flags;
+	int	tmp_fd;
+
+	flags = 0;
+	tmp_fd = 0;
+	if (cmd->append)
+		flags = O_CREAT | O_WRONLY | O_APPEND;
+	else
+		flags = O_CREAT | O_WRONLY | O_TRUNC;
+	tmp_fd = open(cmd->outfile, flags, 0644);
+	if (tmp_fd < 0 && !cmd->input_error)
+	{
+		perror(cmd->outfile);
+		cmd->input_error = true;
+		g_last_exit_status = 1;
+	}
+	else
+		close(tmp_fd);
+	return (false);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/03 17:38:56 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:19:01 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,31 @@ void	process_args(t_cmd *cmd, int last_exit_status)
 	if (cmd->args[0][0] == '\0' && cmd->args[1])
 		shift_args(cmd);
 	update_cmd(cmd);
+}
+
+int	count_argument_tokens(char **tokens)
+{
+	int	count;
+	int	i;
+
+	count = 0;
+	i = 0;
+	while (tokens[i])
+	{
+		if (!ft_strcmp(tokens[i], "<") || !ft_strcmp(tokens[i], ">")
+			|| !ft_strcmp(tokens[i], ">>"))
+		{
+			if (tokens[i + 1])
+				i += 2;
+			else
+			{
+				printf("syntax error near unexpected token `newline'\n");
+				return (-1);
+			}
+			continue ;
+		}
+		count++;
+		i++;
+	}
+	return (count);
 }
