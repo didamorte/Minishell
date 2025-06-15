@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strcmp.c                                        :+:      :+:    :+:   */
+/*   error2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/30 15:57:08 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/20 21:15:35 by diogribe         ###   ########.fr       */
+/*   Created: 2025/06/13 20:22:36 by diogribe          #+#    #+#             */
+/*   Updated: 2025/06/13 22:06:59 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+int	error_syntax(char *token)
 {
-	while (*s1 && (*s1 == *s2))
-	{
-		s1++;
-		s2++;
-	}
-	return (*(unsigned char *)s1 - *(unsigned char *)s2);
+	ft_putstr_fd("minishell: syntax error near unexpected token `",
+		STDERR_FILENO);
+	ft_putstr_fd(token, STDERR_FILENO);
+	ft_putstr_fd("'\n", STDERR_FILENO);
+	return (2);
+}
+
+int	error_unexpected_eof(void)
+{
+	ft_putstr_fd("minishell: unexpected end of file\n", STDERR_FILENO);
+	return (2);
 }

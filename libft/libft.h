@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 11:38:20 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/05 17:35:24 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:46:53 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int		ft_isascii(int c);
 int		ft_isprint(int c);
 /*Checa se eh espaço*/
 int		ft_isspace(int c);
+/*Checa se eh + ou -*/
+int		ft_is_plus_minus(int c);
 
 /*Retorna o tamanho da string*/
 size_t	ft_strlen(const char *s);

@@ -3,96 +3,81 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/01 18:54:44 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/10 23:05:55 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static char	*process_arg(char *arg, int last_exit_status)
+{
+	bool	was_single_quoted;
+	char	*no_quotes;
+	char	*res;
+
+	was_single_quoted = (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'');
+	no_quotes = remove_quotes(arg);
+	if (!no_quotes)
+		return (NULL);
+	if (was_single_quoted)
+		return (no_quotes);
+	res = expand_variables(no_quotes, last_exit_status);
+	free(no_quotes);
+	return (res);
+}
+
+static void	update_cmd(t_cmd *cmd)
+{
+	free(cmd->cmd);
+	if (cmd->args[0])
+		cmd->cmd = ft_strdup(cmd->args[0]);
+	else
+		cmd->cmd = ft_strdup("");
+}
+
+static void	shift_args(t_cmd *cmd)
+{
+	int		i;
+	char	*tmp;
+
+	tmp = cmd->args[0];
+	i = 0;
+	while (cmd->args[i + 1])
+	{
+		cmd->args[i] = cmd->args[i + 1];
+		i++;
+	}
+	cmd->args[i] = NULL;
+	free(tmp);
+}
+
 void	process_args(t_cmd *cmd, int last_exit_status)
 {
 	int		i;
-	char	*arg;
-	char	*cleaned;
-	char	*expanded;
+	char	*new_arg;
 
+	if (!cmd || !cmd->args)
+		return ;
 	i = 0;
 	while (cmd->args[i])
 	{
-		arg = cmd->args[i];
-		cleaned = remove_quotes(arg);
-		if (arg[0] == '\'' && arg[ft_strlen(arg) - 1] == '\'')
-		{
-			free(cmd->args[i]);
-			cmd->args[i] = cleaned;
-		}
+		new_arg = process_arg(cmd->args[i], last_exit_status);
+		free(cmd->args[i]);
+		if (new_arg)
+			cmd->args[i] = new_arg;
 		else
-		{
-			expanded = expand_variables(cleaned, last_exit_status);
-			free(cmd->args[i]);
-			free(cleaned);
-			cmd->args[i] = expanded;
-		}
+			cmd->args[i] = ft_strdup("");
 		i++;
 	}
-}
-
-void	free_cmd(t_cmd *cmd)
-{
-	if (!cmd)
-		return ;
-	if (cmd->args)
-		free_split(cmd->args);
-	if (cmd->cmd)
-		free(cmd->cmd);
-	if (cmd->infile)
-		free(cmd->infile);
-	if (cmd->outfile)
-		free(cmd->outfile);
-	if (cmd->heredoc_delimiter)
-		free(cmd->heredoc_delimiter);
-	free(cmd);
-}
-
-void	cleanup(t_cmd *cmd, char *input)
-{
-	free_cmd(cmd);
-	free(input);
-}
-
-void	final_cleanup(char *input)
-{
-	if (input)
-		free(input);
-	rl_clear_history();
-}
-
-int	count_argument_tokens(char **tokens)
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (tokens[i])
+	if (!cmd->args[0])
 	{
-		if (!ft_strcmp(tokens[i], "<") || !ft_strcmp(tokens[i], ">")
-			|| !ft_strcmp(tokens[i], ">>"))
-		{
-			if (tokens[i + 1])
-				i += 2;
-			else
-			{
-				printf("syntax error near unexpected token `newline'\n");
-				return (-1);
-			}
-			continue ;
-		}
-		count++;
-		i++;
+		update_cmd(cmd);
+		return ;
 	}
-	return (count);
+	if (cmd->args[0][0] == '\0' && cmd->args[1])
+		shift_args(cmd);
+	update_cmd(cmd);
 }

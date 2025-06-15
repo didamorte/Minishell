@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:55:57 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/14 18:41:54 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/05/20 22:37:10 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	skip_var_in_copy(char **new_env, char *name)
 	len = ft_strlen(name);
 	while (environ[i])
 	{
-		if (ft_strncmp(environ[i], name, len) != 0 ||
-			environ[i][len] != '=')
+		if (ft_strncmp(environ[i], name, len) != 0
+			|| environ[i][len] != '=')
 		{
 			new_env[j] = ft_strdup(environ[i]);
 			j++;
@@ -71,4 +71,27 @@ int	is_valid_n_flag(const char *arg)
 		i++;
 	}
 	return (1);
+}
+
+bool	is_there_invalid_identifiers(char **args)
+{
+	int		i;
+	bool	result;
+
+	i = 1;
+	result = false;
+	while (args[i])
+	{
+		if (!is_valid_identifier(args[i]))
+		{
+			ft_putstr_fd("export: '", 2);
+			ft_putstr_fd(args[i], 2);
+			ft_putstr_fd("': not a valid identifier\n", 2);
+			result = true;
+			i++;
+		}
+		else
+			i++;
+	}
+	return (result);
 }

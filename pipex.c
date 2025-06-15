@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/15 10:44:32 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/03 17:30:46 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	free_split(char **arr)
-{
-	int	i;
-
-	i = 0;
-	if (arr == NULL)
-		return ;
-	while (arr[i] != NULL)
-	{
-		free(arr[i]);
-		arr[i] = NULL;
-		i++;
-	}
-	free(arr);
-}
 
 static int	fill_cmds_array(t_cmd **cmds, char **args)
 {
@@ -66,45 +50,26 @@ t_cmd	**parse_pipeline(char *input)
 	return (cmds);
 }
 
-static int	wait_and_get_exit_status(pid_t last_pid)
-{
-	pid_t	pid;
-	int		status;
-	int		exit_status;
-
-	exit_status = 1;
-	pid = wait(&status);
-	while (pid > 0)
-	{
-		if (pid == last_pid)
-			exit_status = WEXITSTATUS(status);
-		pid = wait(&status);
-	}
-	return (exit_status);
-}
-
 int	execute_pipeline(t_cmd **cmds)
 {
-	int		i;
-	int		pipefd[2];
-	int		prev_read;
-	pid_t	pid;
-	pid_t	last_pid;
+	pid_t	*pids_arr;
+	int		cmd_count;
+	int		init_res;
+	int		prev_fd;
+	int		exit_status;
 
-	i = 0;
-	prev_read = -1;
-	last_pid = -1;
-	while (cmds[i])
+	prev_fd = -1;
+	init_res = initialize_pipeline_data(cmds, &cmd_count, &pids_arr);
+	if (init_res == 2)
+		return (0);
+	if (init_res == 1)
+		return (1);
+	if (fork_pipeline_commands(cmds, cmd_count, pids_arr, &prev_fd) != 0)
 	{
-		if (create_pipe_if_needed(cmds, pipefd, i))
-			return (1);
-		pid = fork_child(cmds, i, prev_read, pipefd);
-		if (pid < 0)
-			return (1);
-		if (cmds[i + 1] == NULL)
-			last_pid = pid;
-		close_unused_fds(cmds, i, &prev_read, pipefd);
-		i++;
+		free(pids_arr);
+		return (1);
 	}
-	return (wait_and_get_exit_status(last_pid));
+	exit_status = wait_for_pipeline_completion(cmd_count, pids_arr);
+	free(pids_arr);
+	return (exit_status);
 }

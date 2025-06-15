@@ -3,14 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   buildins2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:01:35 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/18 22:41:36 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/09 18:39:13 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	is_env_match(char *env, char *name)
+{
+	size_t	len;
+
+	len = ft_strlen(name);
+	return (ft_strncmp(env, name, len) == 0 && env[len] == '=');
+}
 
 int	handle_export(char **args)
 {
@@ -36,6 +44,8 @@ int	handle_export(char **args)
 		}
 		i++;
 	}
+	if (is_there_invalid_identifiers(args))
+		result = 1;
 	return (result);
 }
 
@@ -70,6 +80,12 @@ int	handle_env(char **args)
 	}
 	while (*env)
 	{
+		if (ft_strncmp(*env, "LINES=", 6) == 0
+			|| ft_strncmp(*env, "COLUMNS=", 8) == 0)
+		{
+			env++;
+			continue ;
+		}
 		eq_sign = ft_strchr(*env, '=');
 		if (eq_sign && eq_sign != *env)
 			ft_putendl_fd(*env, 1);

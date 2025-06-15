@@ -6,39 +6,48 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/05/15 16:20:12 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/13 22:02:43 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_path(char *cmd)
+static char	*find_exec(char **dirs, char *cmd)
 {
-	char	*path;
-	char	*path_env;
-	char	**dirs;
-	char	*full_path;
+	char	*cand;
 	int		i;
 
-	path = NULL;
-	path_env = getenv("PATH");
-	dirs = ft_split(path_env, ':');
 	i = 0;
 	while (dirs && dirs[i])
 	{
-		full_path = ft_strjoin(dirs[i], "/");
-		path = ft_strjoin(full_path, cmd);
-		free(full_path);
-		if (access(path, X_OK) == 0)
-			break ;
-		free(path);
-		path = NULL;
+		cand = ft_strjoin_triple(dirs[i], "/", cmd);
+		if (access(cand, X_OK) == 0)
+			return (cand);
+		free(cand);
 		i++;
 	}
+	return (NULL);
+}
+
+char	*get_path(char *cmd)
+{
+	char	*path_env;
+	char	**dirs;
+	char	*candidate;
+
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, F_OK) != 0)
+			return (NULL);
+		return (ft_strdup(cmd));
+	}
+	path_env = getenv("PATH");
+	if (!path_env)
+		return (NULL);
+	dirs = ft_split(path_env, ':');
+	candidate = find_exec(dirs, cmd);
 	free_split(dirs);
-	if (!path && access(cmd, X_OK) == 0)
-		path = ft_strdup(cmd);
-	return (path);
+	return (candidate);
 }
 
 char	**env_to_array(void)
@@ -80,33 +89,25 @@ int	validate_exit_args(char **args, int arg_count)
 	}
 	while (code_str[i] && is_valid)
 	{
-		if (!ft_isdigit(code_str[i]))
+		if (!ft_isdigit(code_str[i]) && !ft_is_plus_minus(code_str[i]))
 			is_valid = 0;
 		i++;
 	}
 	return (is_valid);
 }
 
-int	execute_child_process(char *path, char *cmd, char	**args)
+bool	is_valid_identifier(const char *s)
 {
-	char	**envp;
-	int		result;
+	int	i;
 
-	envp = env_to_array();
-	result = execve(path, args, envp);
-	free_split(envp);
-	if (result == -1)
+	if (!ft_isalpha(s[0]) && s[0] != '_')
+		return (false);
+	i = 1;
+	while (s[i] && s[i] != '=')
 	{
-		ft_putstr_fd(cmd, STDERR_FILENO);
-		ft_putstr_fd(": ", STDERR_FILENO);
-		perror("");
+		if (!ft_isalnum(s[i]) && s[i] != '_')
+			return (false);
+		i++;
 	}
-	return (result);
-}
-
-int	handle_command_not_found(char *cmd)
-{
-	ft_putstr_fd(cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
-	return (127);
+	return (true);
 }
