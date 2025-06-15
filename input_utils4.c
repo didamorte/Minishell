@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:46:34 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 14:21:06 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/15 18:03:51 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ bool	handle_input(t_cmd *cmd, char **input, int *i, int *argc)
 	else if (!ft_strcmp(input[*i], "<<") && input[*i + 1])
 		handle_heredocs(cmd, input, i);
 	else
-		cmd->args[(*argc)++] = remove_quotes(input[*i]);
+		cmd->args[(*argc)++] = ft_strdup(input[*i]);
 	return (false);
 }
 
