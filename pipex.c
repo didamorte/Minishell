@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/12 20:20:45 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:33:20 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,34 @@ t_cmd	**parse_pipeline(char *input)
 	return (cmds);
 }
 
+static int	wait_and_get_exit_status(pid_t last_pid)
+{
+	pid_t	pid;
+	int		status;
+	int		exit_status;
+
+	exit_status = 1;
+	pid = wait(&status);
+	while (pid > 0)
+	{
+		if (pid == last_pid)
+			exit_status = WEXITSTATUS(status);
+		pid = wait(&status);
+	}
+	return (exit_status);
+}
+
 int	execute_pipeline(t_cmd **cmds)
 {
 	int		i;
 	int		pipefd[2];
 	int		prev_read;
 	pid_t	pid;
-	int		status;
-	pid_t last_pid = -1;
-	int		exit_status = 1;
+	pid_t	last_pid;
 
 	i = 0;
 	prev_read = -1;
+	last_pid = -1;
 	while (cmds[i])
 	{
 		if (create_pipe_if_needed(cmds, pipefd, i))
@@ -85,18 +101,10 @@ int	execute_pipeline(t_cmd **cmds)
 		pid = fork_child(cmds, i, prev_read, pipefd);
 		if (pid < 0)
 			return (1);
-		if (cmds[i + 1] == NULL)  // último comando
+		if (cmds[i + 1] == NULL)
 			last_pid = pid;
 		close_unused_fds(cmds, i, &prev_read, pipefd);
 		i++;
 	}
-	// while (i-- > 0)
-	// 	wait(&status);
-	// return (status);
-	while ((pid = wait(&status)) > 0)
-	{
-		if (pid == last_pid)
-			exit_status = WEXITSTATUS(status);
-	}
-	return exit_status;
+	return (wait_and_get_exit_status(last_pid));
 }

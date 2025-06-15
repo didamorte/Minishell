@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:16:25 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/10 23:21:44 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/15 10:35:53 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ static void	child_process(t_cmd **cmds, int i, int prev_read, int pipefd[2])
 		close(pipefd[1]);
 	}
 	init_fds(saved_fds);
-	if(redirect_io(cmds[i], saved_fds) != 0)
+	if (redirect_io(cmds[i], saved_fds) != 0)
 		exit (1);
-	// redirect_io(cmds[i], saved_fds);
+	if (cmds[i]->input_error)
+		exit(1);
 	exec_or_builtin(cmds[i]);
 	exit(1);
 }

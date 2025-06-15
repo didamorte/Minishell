@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/12 22:17:04 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/14 19:20:34 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,43 +62,6 @@ char	*get_input_with_continuation(void)
 	return (input);
 }
 
-/*------------------------------------------------------------*/
-
-// void	print_cmd_debug(t_cmd *cmd)
-// {
-// 	int i = 0;
-
-// 	printf("=== CMD STRUCT DEBUG ===\n");
-
-// 	if (cmd->cmd)
-// 		printf("cmd: %s\n", cmd->cmd);
-// 	else
-// 		printf("cmd: NULL\n");
-
-// 	if (cmd->args)
-// 	{
-// 		while (cmd->args[i])
-// 		{
-// 			printf("args[%d]: %s\n", i, cmd->args[i]);
-// 			i++;
-// 		}
-// 	}
-// 	else
-// 		printf("args: NULL\n");
-
-// 	if (cmd->infile)
-// 		printf("infile: %s\n", cmd->infile);
-// 	if (cmd->outfile)
-// 		printf("outfile: %s\n", cmd->outfile);
-// 	if (cmd->append)
-// 		printf("append: true\n");
-// 	if (cmd->has_heredoc)
-// 		printf("heredoc: true (delimiter: %s)\n", cmd->heredoc_delimiter);
-// 	printf("========================\n");
-// }
-
-/*---------------------------------------------------------------------------*/
-
 void	parse_input_to_cmd(t_cmd *cmd, char **input)
 {
 	int	argcount;
@@ -111,7 +74,6 @@ void	parse_input_to_cmd(t_cmd *cmd, char **input)
 	if (!cmd->args)
 		return ;
 	fill_cmd(cmd, input);
-	// print_cmd_debug(cmd);
 }
 
 t_cmd	*parse_input(char *input)
@@ -134,17 +96,8 @@ t_cmd	*parse_input(char *input)
 		return (NULL);
 	}
 	parse_input_to_cmd(cmd, args);
-
-	
-	// /*............................................*/
-	// for (int i = 0; cmd->args[i]; i++)
-    // 	printf("args[%d] = '%s'\n", i, cmd->args[i]);
-	// /*............................................*/
-
-
-	
 	free_split(args);
-	if (!cmd->cmd)
+	if (!cmd->cmd && !(cmd->infile || cmd->outfile || cmd->has_heredoc))
 	{
 		free(cmd);
 		return (NULL);
@@ -161,11 +114,8 @@ int	process_command(t_cmd *cmd, int arg_count)
 
 	init_fds(saved_fds);
 	if (cmd->input_error)
-	{
-		ft_putstr_fd("minishell: No such file or directory\n", 2);
 		return (1);
-	}
-	if(redirect_io(cmd, saved_fds) != 0)
+	if (redirect_io(cmd, saved_fds) != 0)
 	{
 		return (1);
 	}
