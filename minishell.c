@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/16 18:17:53 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:18:31 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,21 @@ int	count_args(char **args)
 	return (count);
 }
 
-int	main(void)
+static void	shell_loop(void)
 {
 	char	*input;
 
-	rl_catch_signals = 0;
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, handle_sigquit);
 	while (1)
 	{
 		input = get_input_with_continuation();
 		if (input == NULL)
 			break ;
-		if (ft_strchr(input, '|'))
+		if (ft_strstr(input, "||"))
+		{
+			if (!handle_logical_or(input))
+				continue ;
+		}
+		else if (ft_strchr(input, '|'))
 		{
 			if (!handle_pipeline_input(input))
 				continue ;
@@ -81,5 +83,13 @@ int	main(void)
 		}
 	}
 	final_cleanup(input);
+}
+
+int	main(void)
+{
+	rl_catch_signals = 0;
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, handle_sigquit);
+	shell_loop();
 	return (g_last_exit_status);
 }
