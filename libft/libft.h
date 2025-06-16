@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 11:38:20 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/02 15:46:53 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/16 17:48:25 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	*ft_memchr(const void *s1, int c, size_t n);
 int		ft_memcmp(const void *s1, const void *s2, size_t n);
 /*procura por little em n carateres de big*/
 char	*ft_strnstr(const char *big, const char *little, size_t len);
+/*procura por needle em haystack*/
+char	*ft_strstr(const char *haystack, const char *needle);
 /*passa string a inteiro*/
 int		ft_atoi(const char *nptr);
 /*passa string a long*/

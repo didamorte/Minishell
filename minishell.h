@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/15 14:22:31 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/16 17:35:55 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int		count_args(char **args);
 int		chose_buildin(t_cmd *cmd, int arg_count);
 int		handle_pipeline_input(char *input);
 int		handle_single_command_input(char *input);
+int		handle_logical_or(char *input);
 
 /* Input utils */
 
@@ -93,7 +94,6 @@ char	*get_path(char *cmd);
 char	**env_to_array(void);
 int		validate_exit_args(char **args, int arg_count);
 int		execute_child_process(char *path, char	**args);
-int		handle_command_not_found(char *cmd);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);
 int		is_env_match(char *env, char *name);
