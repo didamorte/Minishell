@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 19:36:46 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/17 17:49:54 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:50:57 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,28 @@ int	handle_single_command_input(char *input)
 	return (1);
 }
 
+char	*find_logical_or(char *s)
+{
+	char	quote;
+
+	while (*s)
+	{
+		if (*s == '\'' || *s == '"')
+		{
+			quote = *s++;
+			while (*s && *s != quote)
+				s++;
+			if (*s)
+				s++;
+			continue ;
+		}
+		if (s[0] == '|' && s[1] == '|')
+			return (s);
+		s++;
+	}
+	return (NULL);
+}
+
 static void	exec_str(char *s)
 {
 	if (ft_strchr(s, '|'))
@@ -60,7 +82,9 @@ int	handle_logical_or(char *input)
 	char	*left;
 	char	*right;
 
-	pos = ft_strstr(input, "||");
+	pos = find_logical_or(input);
+	if (!pos)
+		return (0);
 	*pos = '\0';
 	left = ft_strtrim(input, " ");
 	right = ft_strtrim(pos + 2, " ");

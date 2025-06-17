@@ -15,7 +15,6 @@ SRCS := buildins.c buildins2.c buildins_utils.c buildins_utils2.c \
         pipex.c pipex_utils.c pipex_utils2.c pipex_utils3.c \
         quotes_utils.c quotes_utils2.c
 
-
 OBJS := $(SRCS:.c=.o)
 
 # Explicit Library Paths

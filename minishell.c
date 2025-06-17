@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:49:59 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:51:11 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	handle_sigint(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
+	g_last_exit_status = 130;
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
@@ -30,9 +31,10 @@ void	handle_sigquit(int sig)
 
 	(void)sig;
 	pid = waitpid(-1, &status, WNOHANG);
-	if (pid == 0)
+	if (pid > 0)
 	{
 		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		g_last_exit_status = 131;
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
@@ -64,23 +66,14 @@ static void	shell_loop(void)
 	while (1)
 	{
 		input = get_input_with_continuation();
-		if (input == NULL)
+		if (!input)
 			break ;
-		if (ft_strstr(input, "||"))
-		{
-			if (!handle_logical_or(input))
-				continue ;
-		}
+		if (find_logical_or(input))
+			handle_logical_or(input);
 		else if (ft_strchr(input, '|'))
-		{
-			if (!handle_pipeline_input(input))
-				continue ;
-		}
+			handle_pipeline_input(input);
 		else
-		{
-			if (!handle_single_command_input(input))
-				continue ;
-		}
+			handle_single_command_input(input);
 	}
 	final_cleanup(input);
 }
