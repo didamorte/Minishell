@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/16 18:14:54 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/16 18:36:25 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,8 +121,7 @@ int	process_command(t_cmd *cmd, int arg_count)
 		return (0);
 	original_sigint = signal(SIGINT, SIG_IGN);
 	original_sigquit = signal(SIGQUIT, SIG_IGN);
-	if (ft_strlen(cmd->cmd) != 0)
-		status = chose_buildin(cmd, arg_count);
+	status = chose_buildin(cmd, arg_count);
 	signal(SIGINT, original_sigint);
 	signal(SIGQUIT, original_sigquit);
 	dup2(saved_fds[0], STDIN_FILENO);
