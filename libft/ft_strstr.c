@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   error2.c                                           :+:      :+:    :+:   */
+/*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/13 20:22:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/13 22:06:59 by diogribe         ###   ########.fr       */
+/*   Created: 2025/06/16 17:45:24 by diogribe          #+#    #+#             */
+/*   Updated: 2025/06/16 17:47:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	error_syntax(char *token)
+char	*ft_strstr(const char *haystack, const char *needle)
 {
-	ft_putstr_fd("minishell: syntax error near unexpected token `",
-		STDERR_FILENO);
-	ft_putstr_fd(token, STDERR_FILENO);
-	ft_putstr_fd("'\n", STDERR_FILENO);
-	return (2);
-}
+	size_t	i;
+	size_t	j;
 
-int	error_unexpected_eof(void)
-{
-	ft_putstr_fd("minishell: unexpected end of file\n", STDERR_FILENO);
-	return (2);
+	if (!*needle)
+		return ((char *)haystack);
+	i = 0;
+	while (haystack[i])
+	{
+		j = 0;
+		while (needle[j] && haystack[i + j] == needle[j])
+			j++;
+		if (!needle[j])
+			return ((char *)(haystack + i));
+		i++;
+	}
+	return (NULL);
 }

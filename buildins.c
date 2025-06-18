@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/13 22:06:35 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/18 21:27:31 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	handle_cd(char **args, int arg_count)
 	result = 0;
 	if (arg_count > 2)
 		return (ft_putstr_fd("minishel: cd: too many arguments\n", 2), 1);
-	if (!path)
+	if (!path || path[0] == '\0')
 	{
 		home = getenv("HOME");
 		if (!home)

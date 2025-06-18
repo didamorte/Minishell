@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/15 14:22:31 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/17 17:51:18 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 # include <readline/history.h>
 # include <signal.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 
 extern int	g_last_exit_status;
 
-/* Quotes */
 typedef struct s_cmd
 {
 	char	*cmd;
@@ -59,6 +59,8 @@ int		count_args(char **args);
 int		chose_buildin(t_cmd *cmd, int arg_count);
 int		handle_pipeline_input(char *input);
 int		handle_single_command_input(char *input);
+int		handle_logical_or(char *input);
+char	*find_logical_or(char *s);
 
 /* Input utils */
 
@@ -72,8 +74,6 @@ void	close_fds(int *saved_fds);
 int		handle_heredoc(t_cmd *cmd, int *saved_fds);
 char	*preprocess_input(const char *input);
 bool	open_output_file(t_cmd *cmd);
-char	*process_and_format(const char *input, char *new_input);
-void	update_quote_state(char c, char *quote);
 
 /* Buildins */
 
@@ -93,7 +93,6 @@ char	*get_path(char *cmd);
 char	**env_to_array(void);
 int		validate_exit_args(char **args, int arg_count);
 int		execute_child_process(char *path, char	**args);
-int		handle_command_not_found(char *cmd);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);
 int		is_env_match(char *env, char *name);
@@ -141,7 +140,5 @@ int		error_denied(char *path, char *cmd);
 int		error_no_file(char *path, char *cmd);
 int		error_is_directory(char *path, char *cmd);
 int		error_cmd_not_found(char *path, char *cmd);
-int		error_syntax(char *token);
-int		error_unexpected_eof(void);
 
 #endif
