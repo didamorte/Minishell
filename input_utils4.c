@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:46:34 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 18:03:51 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/19 00:19:35 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,18 @@ bool	handle_input(t_cmd *cmd, char **input, int *i, int *argc)
 		if (handle_output_redirection(cmd, input, i))
 			return (true);
 	}
-	else if (!ft_strcmp(input[*i], "<<") && input[*i + 1])
-		handle_heredocs(cmd, input, i);
+	else if (!ft_strcmp(input[*i], "<<"))
+	{
+		if (input[*i + 1])
+			handle_heredocs(cmd, input, i);
+		else
+		{
+			ft_putstr_fd("minishell: syntax error near unexpected token ", 2);
+			ft_putstr_fd("`newline'\n", 2);
+			cmd->input_error = true;
+			g_last_exit_status = 2;
+		}
+	}
 	else
 		cmd->args[(*argc)++] = ft_strdup(input[*i]);
 	return (false);
