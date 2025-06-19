@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/19 15:18:18 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:26:55 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	handle_cd(char **args, int arg_count)
 	if (arg_count > 2)
 		return (ft_putstr_fd("minishel: cd: too many arguments\n", 2), 1);
 	path = args[1];
-	if (!path || path[0] == '\0')
+	if (!path || path[0] == '\0' || path[0] == '~')
 	{
 		home = getenv("HOME");
 		if (!home)
