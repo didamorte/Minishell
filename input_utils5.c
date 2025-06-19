@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils5.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:14:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 10:27:35 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:01:25 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,24 @@ char	*preprocess_input(const char *input)
 	}
 	new_input[j] = '\0';
 	return (new_input);
+}
+
+void	update_shlvl(void)
+{
+	char	*cur;
+	int		lvl;
+	char	buf[16];
+
+	cur = getenv("SHLVL");
+	if (cur != NULL)
+		lvl = ft_atoi(cur);
+	else
+		lvl = 0;
+	lvl = lvl + 1;
+	if (lvl < 0)
+		lvl = 0;
+	if (lvl > 999)
+		lvl = 1;
+	snprintf(buf, sizeof(buf), "%d", lvl);
+	set_env_var("SHLVL", buf);
 }

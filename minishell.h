@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:51:18 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:02:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ typedef struct s_cmd
 	char	*heredoc_delimiter;
 	bool	input_error;
 }				t_cmd;
+
+void	update_shlvl(void);
 
 /* Quotes */
 
