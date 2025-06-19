@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/19 15:01:15 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:10:21 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,29 +22,6 @@ void	handle_sigint(int sig)
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-void	handle_sigquit(int sig)
-{
-	pid_t	pid;
-	int		status;
-
-	(void)sig;
-	pid = waitpid(-1, &status, WNOHANG);
-	if (pid > 0)
-	{
-		ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-		g_last_exit_status = 131;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else
-	{
-		ft_putstr_fd("\033[2K\r", STDERR_FILENO);
-		rl_on_new_line();
-		rl_redisplay();
-	}
 }
 
 int	count_args(char **args)
@@ -82,7 +59,7 @@ int	main(void)
 {
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, handle_sigquit);
+	signal(SIGQUIT, SIG_IGN);
 	update_shlvl();
 	shell_loop();
 	return (g_last_exit_status);

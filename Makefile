@@ -47,4 +47,32 @@ fclean: clean
 
 re: fclean all
 
+valgrind: 
+	$(file > $(SUPR_FILE),$(SUPRESSION_FILE_BODY))
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=$(SUPR_FILE) --tool=memcheck ./$(NAME)
+	$(RM) $(SUPR_FILE)
+
+define SUPRESSION_FILE_BODY
+{
+   name
+   Memcheck:Leak
+   fun:*alloc
+   ...
+   obj:*/libreadline.so.*
+   ...
+}
+{
+    leak readline
+    Memcheck:Leak
+    ...
+    fun:readline
+}
+{
+    leak add_history
+    Memcheck:Leak
+    ...
+    fun:add_history
+}
+endef
+
 .PHONY: all clean fclean re

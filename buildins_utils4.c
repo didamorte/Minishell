@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 22:15:08 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/13 22:06:01 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/19 19:07:13 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,13 @@ int	run_external_cmd(char *path, char **args)
 	}
 	waitpid(pid, &status, 0);
 	restore_signals(orig_sq, orig_si);
+	if (WIFSIGNALED(status))
+	{
+		int sig = WTERMSIG(status);
+		if (sig == SIGQUIT)
+			ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
+		return (128 + sig);
+	}
 	return (WEXITSTATUS(status));
 }
 
