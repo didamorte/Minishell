@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/18 21:27:31 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:18:18 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,13 +70,10 @@ int	handle_cd(char **args, int arg_count)
 {
 	char	*path;
 	char	*home;
-	int		result;
 
-	path = args[1];
-	home = NULL;
-	result = 0;
 	if (arg_count > 2)
 		return (ft_putstr_fd("minishel: cd: too many arguments\n", 2), 1);
+	path = args[1];
 	if (!path || path[0] == '\0')
 	{
 		home = getenv("HOME");
@@ -84,14 +81,7 @@ int	handle_cd(char **args, int arg_count)
 			return (write(2, "cd: HOME not set\n", 17), 1);
 		path = home;
 	}
-	result = chdir(path);
-	if (result != 0)
-	{
-		write(2, "minishell: cd: ", 15);
-		perror(path);
-		result = 1;
-	}
-	return (result);
+	return (change_directory(path));
 }
 
 int	handle_echo(t_cmd *cmd, int arg_count)

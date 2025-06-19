@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:14:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/19 15:01:25 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/19 15:18:02 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,21 @@ void	update_shlvl(void)
 		lvl = 1;
 	snprintf(buf, sizeof(buf), "%d", lvl);
 	set_env_var("SHLVL", buf);
+}
+
+int	change_directory(char *path)
+{
+	char	cwd[PATH_MAX];
+
+	if (chdir(path) != 0)
+	{
+		write(2, "minishell: cd: ", 15);
+		perror(path);
+		return (1);
+	}
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		set_env_var("PWD", cwd);
+	else
+		perror("cd: getcwd");
+	return (0);
 }
