@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/19 15:15:02 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 17:31:52 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ int		handle_external(char *cmd, char	**args);
 
 char	*get_path(char *cmd);
 char	**env_to_array(void);
-int		validate_exit_args(char **args, int arg_count);
+bool	is_numeric(const char *s);
 int		execute_child_process(char *path, char	**args);
 int		print_sorted_env(void);
 int		set_env_var(char *name, char *value);

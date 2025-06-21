@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:29:33 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/13 22:02:43 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 17:31:38 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,27 +73,18 @@ char	**env_to_array(void)
 	return (copy);
 }
 
-int	validate_exit_args(char **args, int arg_count)
+bool	is_numeric(const char *s)
 {
-	int		is_valid;
-	int		i;
-	char	*code_str;
+	int	i;
 
-	is_valid = 1;
 	i = 0;
-	code_str = args[1];
-	if (arg_count > 2)
-	{
-		ft_putstr_fd("exit: too many arguments\n", 2);
-		return (-1);
-	}
-	while (code_str[i] && is_valid)
-	{
-		if (!ft_isdigit(code_str[i]) && !ft_is_plus_minus(code_str[i]))
-			is_valid = 0;
+	if (s[i] == '+' || s[i] == '-')
 		i++;
-	}
-	return (is_valid);
+	if (!ft_isdigit(s[i]))
+		return (false);
+	while (s[i] && ft_isdigit(s[i]))
+		i++;
+	return (s[i] == '\0');
 }
 
 bool	is_valid_identifier(const char *s)

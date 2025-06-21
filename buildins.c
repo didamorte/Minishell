@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/19 15:26:55 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 17:34:58 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,21 @@
 
 int	handle_exit(char **args, int arg_count)
 {
-	int		exit_code;
-	int		is_valid;
-
-	exit_code = 0;
-	if (arg_count == 1)
-	{
+	if (arg_count >= 1)
 		ft_putstr_fd("exit\n", 1);
+	if (arg_count == 1)
 		exit(0);
-	}
-	is_valid = validate_exit_args(args, arg_count);
-	if (is_valid == -1)
-		return (1);
-	if (!is_valid)
+	if (!is_numeric(args[1]))
 	{
 		ft_putstr_fd("exit: numeric argument required\n", 2);
-		exit_code = 2;
+		exit(2);
 	}
-	else
-		exit_code = ft_atoi(args[1]);
-	ft_putstr_fd("exit\n", 1);
-	exit(exit_code);
+	if (arg_count > 2)
+	{
+		ft_putstr_fd("exit: too many arguments\n", 2);
+		return (1);
+	}
+	exit(ft_atoi(args[1]));
 }
 
 int	handle_pwd(void)
