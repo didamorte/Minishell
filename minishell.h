@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:51:18 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 19:25:19 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ typedef struct s_cmd
 	char	*heredoc_delimiter;
 	bool	input_error;
 }				t_cmd;
+
+void	update_shlvl(void);
 
 /* Quotes */
 
@@ -74,6 +76,7 @@ void	close_fds(int *saved_fds);
 int		handle_heredoc(t_cmd *cmd, int *saved_fds);
 char	*preprocess_input(const char *input);
 bool	open_output_file(t_cmd *cmd);
+int		is_blank_input(char *input);
 
 /* Buildins */
 
@@ -109,6 +112,7 @@ void	restore_signals(void (*original_sigquit)(int),
 			void (*original_sigint)(int));
 int		check_file(char *path, char *cmd);
 int		run_external_cmd(char *path, char **args);
+int		change_directory(char *path);
 
 /* Pipeline*/
 

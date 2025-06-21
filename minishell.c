@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:51:11 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 20:20:53 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,11 @@ static void	shell_loop(void)
 		input = get_input_with_continuation();
 		if (!input)
 			break ;
+		if (is_blank_input(input))
+		{
+			free(input);
+			continue ;
+		}
 		if (find_logical_or(input))
 			handle_logical_or(input);
 		else if (ft_strchr(input, '|'))

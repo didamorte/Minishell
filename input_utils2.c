@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/17 17:47:59 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 20:20:29 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,18 @@ void	init_cmd(t_cmd *cmd)
 	cmd->has_heredoc = false;
 	cmd->heredoc_delimiter = NULL;
 	cmd->input_error = false;
+}
+
+int	is_blank_input(char *input)
+{
+	int	i;
+
+	i = 0;
+	while (input && input[i])
+	{
+		if (input[i] != ' ' && input[i] != '\t')
+			return (0);
+		i++;
+	}
+	return (1);
 }
