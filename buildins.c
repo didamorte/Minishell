@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/21 17:34:58 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/21 17:39:33 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,13 @@ int	handle_cd(char **args, int arg_count)
 		home = getenv("HOME");
 		if (!home)
 			return (write(2, "cd: HOME not set\n", 17), 1);
+		path = home;
+	}
+	else if (path[0] == '-')
+	{
+		home = getenv("OLDPWD");
+		if (!home)
+			return (write(2, "cd: OLDPWD not set\n", 17), 1);
 		path = home;
 	}
 	return (change_directory(path));
