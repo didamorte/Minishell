@@ -6,7 +6,7 @@
 /*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 22:39:58 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/23 00:46:36 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ bool	process_and_fill_cmd(t_cmd *cmd, char *input);
 void	consume_heredoc_standalone(char *delimiter);
 int		handle_invalid_cmd_and_cleanup(t_cmd *cmd);
 void	parse_input_to_cmd(t_cmd *cmd, char **input);
+
 /* Buildins */
 
 int		handle_exit(char **args, int arg_count);
@@ -145,6 +146,7 @@ int		handle_fork_error_and_reap(int *prev_fd_ptr, int pipe_fds[2],
 int		fork_pipeline_commands(t_cmd **cmds, int cmd_c, pid_t *pids,
 			int *prev_fd_ptr);
 int		wait_for_pipeline_completion(int cmd_c, pid_t *pids);
+void	update_shlvl(char ***env);
 
 /* Cleanups */
 

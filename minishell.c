@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:27:21 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 01:52:37 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/23 00:46:56 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ int	main(int argc, char **argv, char **envp)
 	rl_catch_signals = 0;
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, handle_sigquit);
+	update_shlvl(&my_env);
 	shell_loop(&my_env);
 	free_env(my_env);
 	return (g_last_exit_status);

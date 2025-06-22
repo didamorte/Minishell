@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 19:05:43 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/23 00:46:05 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,24 @@ int	execute_pipeline(t_cmd **cmds)
 	exit_status = wait_for_pipeline_completion(cmd_count, pids_arr);
 	free(pids_arr);
 	return (exit_status);
+}
+
+void	update_shlvl(char ***env)
+{
+	char	*cur;
+	int		lvl;
+	char	buf[16];
+
+	cur = get_env_value("SHLVL", *env);
+	if (cur != NULL)
+		lvl = ft_atoi(cur);
+	else
+		lvl = 0;
+	lvl = lvl + 1;
+	if (lvl < 0)
+		lvl = 0;
+	if (lvl > 999)
+		lvl = 1;
+	snprintf(buf, sizeof(buf), "%d", lvl);
+	set_env_var("SHLVL", buf, env);
 }
