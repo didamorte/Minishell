@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 16:38:27 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 18:37:25 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ t_cmd	*parse_input(char *input, char ***env)
 		return (NULL);
 	if (!process_and_fill_cmd(cmd, input))
 	{
-		free(cmd);
+		free_cmd(cmd);
 		return (NULL);
 	}
 	cmd->env = env;
