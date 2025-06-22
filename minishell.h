@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 14:25:36 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 16:38:47 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ char	*preprocess_input(const char *input);
 bool	open_output_file(t_cmd *cmd);
 int		is_blank_input(char *input);
 bool	process_and_fill_cmd(t_cmd *cmd, char *input);
+void	consume_heredoc_standalone(char *delimiter);
+int		handle_invalid_cmd_and_cleanup(t_cmd *cmd);
 void	parse_input_to_cmd(t_cmd *cmd, char **input);
 /* Buildins */
 

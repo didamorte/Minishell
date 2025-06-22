@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 19:14:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/22 14:32:46 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 16:40:23 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,40 @@ char	*preprocess_input(const char *input)
 	}
 	new_input[j] = '\0';
 	return (new_input);
+}
+
+void	consume_heredoc_standalone(char *delimiter)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, delimiter) == 0)
+			break ;
+		free(line);
+	}
+	free(line);
+}
+
+int	handle_invalid_cmd_and_cleanup(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	if (cmd->has_heredoc)
+	{
+		consume_heredoc_standalone(cmd->heredoc_delimiter);
+		free(cmd->heredoc_delimiter);
+	}
+	if (cmd->outfile)
+		free(cmd->outfile);
+	if (cmd->args)
+	{
+		while (cmd->args[i])
+			free(cmd->args[i++]);
+		free(cmd->args);
+	}
+	free(cmd);
+	return (0);
 }

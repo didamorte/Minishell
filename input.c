@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 12:53:01 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 16:38:27 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,10 +89,10 @@ t_cmd	*parse_input(char *input, char ***env)
 		return (NULL);
 	}
 	cmd->env = env;
-	if (!cmd->cmd && !(cmd->infile || cmd->outfile || cmd->has_heredoc))
+	if ((!cmd->cmd || cmd->cmd[0] == '\0') && !(cmd->infile))
 	{
-		free(cmd);
-		return (NULL);
+		if (!handle_invalid_cmd_and_cleanup(cmd))
+			return (NULL);
 	}
 	return (cmd);
 }
