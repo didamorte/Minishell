@@ -6,14 +6,30 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:16:25 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/22 00:03:21 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 20:36:50 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// int	create_pipe_if_needed(t_cmd **cmds, int pipefd[2], int i)
+// {
+// 	if (cmds[i + 1])
+// 	{
+// 		if (pipe(pipefd) < 0)
+// 		{
+// 			perror("minishell: pipe");
+// 			return (1);
+// 		}
+// 	}
+// 	return (0);
+// }
+
 int	create_pipe_if_needed(t_cmd **cmds, int pipefd[2], int i)
 {
+	pipefd[0] = -1;
+	pipefd[1] = -1;
+
 	if (cmds[i + 1])
 	{
 		if (pipe(pipefd) < 0)
@@ -24,6 +40,7 @@ int	create_pipe_if_needed(t_cmd **cmds, int pipefd[2], int i)
 	}
 	return (0);
 }
+
 
 static void	child_process(t_cmd **cmds, int i, int prev_read, int pipefd[2])
 {
@@ -64,17 +81,37 @@ int	fork_child(t_cmd **cmds, int i, int prev_read, int pipefd[2])
 	return (pid);
 }
 
+// void	close_unused_fds(t_cmd **cmds, int i, int *prev_read, int pipefd[2])
+// {
+// 	if (*prev_read != -1)
+// 		close(*prev_read);
+// 	if (cmds[i + 1])
+// 	{
+// 		close(pipefd[1]);
+// 		*prev_read = pipefd[0];
+// 	}
+// 	else
+// 	{
+// 		close(pipefd[0]);
+// 	}
+// }
+
 void	close_unused_fds(t_cmd **cmds, int i, int *prev_read, int pipefd[2])
 {
 	if (*prev_read != -1)
+	{
 		close(*prev_read);
+		*prev_read = -1;
+	}
 	if (cmds[i + 1])
 	{
-		close(pipefd[1]);
+		if (pipefd[1] != -1)
+			close(pipefd[1]);
 		*prev_read = pipefd[0];
 	}
 	else
 	{
-		close(pipefd[0]);
+		if (pipefd[0] != -1)
+			close(pipefd[0]);
 	}
 }

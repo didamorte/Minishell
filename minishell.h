@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 18:43:28 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 19:03:23 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ typedef struct s_expand_ctx
 	int			last_exit_status;
 	char		**envp;
 }	t_expand_ctx;
+
 
 /* Quotes */
 
