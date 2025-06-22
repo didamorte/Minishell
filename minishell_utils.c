@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 19:36:46 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/17 17:50:57 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 00:13:15 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	handle_pipeline_input(char *input)
+int	handle_pipeline_input(char *input, char ***envp)
 {
 	t_cmd	**pipeline_cmds;
 
-	pipeline_cmds = parse_pipeline(input);
+	pipeline_cmds = parse_pipeline(input, envp);
 	if (!pipeline_cmds)
 	{
 		free(input);
@@ -28,12 +28,12 @@ int	handle_pipeline_input(char *input)
 	return (1);
 }
 
-int	handle_single_command_input(char *input)
+int	handle_single_command_input(char *input, char ***env)
 {
 	t_cmd	*cmd;
 	int		arg_count;
 
-	cmd = parse_input(input);
+	cmd = parse_input(input, env);
 	if (!cmd)
 	{
 		free(input);
@@ -68,15 +68,15 @@ char	*find_logical_or(char *s)
 	return (NULL);
 }
 
-static void	exec_str(char *s)
+static void	exec_str(char *s, char ***envp)
 {
 	if (ft_strchr(s, '|'))
-		handle_pipeline_input(s);
+		handle_pipeline_input(s, envp);
 	else
-		handle_single_command_input(s);
+		handle_single_command_input(s, envp);
 }
 
-int	handle_logical_or(char *input)
+int	handle_logical_or(char *input, char ***envp)
 {
 	char	*pos;
 	char	*left;
@@ -89,8 +89,8 @@ int	handle_logical_or(char *input)
 	left = ft_strtrim(input, " ");
 	right = ft_strtrim(pos + 2, " ");
 	free(input);
-	exec_str(left);
+	exec_str(left, envp);
 	if (g_last_exit_status != 0)
-		exec_str(right);
+		exec_str(right, envp);
 	return (1);
 }

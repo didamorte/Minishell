@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 15:01:35 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/09 18:39:13 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:43:54 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	is_env_match(char *env, char *name)
 	return (ft_strncmp(env, name, len) == 0 && env[len] == '=');
 }
 
-int	handle_export(char **args)
+int	handle_export(char **args, char ***env)
 {
 	int		i;
 	char	*eq_sign;
@@ -31,7 +31,7 @@ int	handle_export(char **args)
 	i = 1;
 	result = 0;
 	if (!args[1])
-		return (print_sorted_env());
+		return (print_sorted_env(*env));
 	while (args[i])
 	{
 		eq_sign = ft_strchr(args[i], '=');
@@ -39,7 +39,7 @@ int	handle_export(char **args)
 		{
 			var_name = ft_substr(args[i], 0, eq_sign - args[i]);
 			var_value = eq_sign + 1;
-			result = set_env_var(var_name, var_value);
+			result = set_env_var(var_name, var_value, env);
 			free(var_name);
 		}
 		i++;
@@ -49,7 +49,7 @@ int	handle_export(char **args)
 	return (result);
 }
 
-int	handle_unset(char **args)
+int	handle_unset(char **args, char ***env)
 {
 	int	i;
 	int	result;
@@ -60,36 +60,35 @@ int	handle_unset(char **args)
 		return (0);
 	while (args[i])
 	{
-		result = unset_env_var(args[i]);
+		result = unset_env_var(env, args[i]);
 		i++;
 	}
 	return (result);
 }
 
-int	handle_env(char **args)
+int	handle_env(char **args, char **env)
 {
-	extern char	**environ;
-	char		**env;
-	char		*eq_sign;
+	char	*eq_sign;
+	int		i;
 
-	env = environ;
+	i = 0;
 	if (args[1])
 	{
 		ft_putstr_fd("env: too many arguments\n", 2);
 		return (1);
 	}
-	while (*env)
+	while (env[i])
 	{
-		if (ft_strncmp(*env, "LINES=", 6) == 0
-			|| ft_strncmp(*env, "COLUMNS=", 8) == 0)
+		if (ft_strncmp(env[i], "LINES=", 6) == 0
+			|| ft_strncmp(env[i], "COLUMNS=", 8) == 0)
 		{
-			env++;
+			i++;
 			continue ;
 		}
-		eq_sign = ft_strchr(*env, '=');
-		if (eq_sign && eq_sign != *env)
-			ft_putendl_fd(*env, 1);
-		env++;
+		eq_sign = ft_strchr(env[i], '=');
+		if (eq_sign && eq_sign != env[i])
+			ft_putendl_fd(env[i], 1);
+		i++;
 	}
 	return (0);
 }

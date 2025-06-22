@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins_utils4.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 22:15:08 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/21 16:55:05 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:43:01 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	check_file(char *path, char *cmd)
 	return (0);
 }
 
-int	run_external_cmd(char *path, char **args)
+int	run_external_cmd(char *path, char **args, char **envp)
 {
 	pid_t	pid;
 	int		status;
@@ -53,29 +53,19 @@ int	run_external_cmd(char *path, char **args)
 	{
 		signal(SIGQUIT, SIG_DFL);
 		signal(SIGINT, SIG_DFL);
-		if (execute_child_process(path, args) == -1)
+		if (execute_child_process(path, args, envp) == -1)
 			exit(EXIT_FAILURE);
 		exit(EXIT_SUCCESS);
 	}
 	waitpid(pid, &status, 0);
 	restore_signals(orig_sq, orig_si);
-	if (WIFSIGNALED(status))
-	{
-		status = WTERMSIG(status);
-		if (status == SIGQUIT)
-			ft_putstr_fd("Quit (core dumped)\n", STDERR_FILENO);
-		return (128 + status);
-	}
-	return (WEXITSTATUS(status));
+	return (handle_child_exit_status(status));
 }
 
-int	execute_child_process(char *path, char	**args)
+int	execute_child_process(char *path, char	**args, char **envp)
 {
-	char	**envp;
 	int		result;
 
-	envp = env_to_array();
 	result = execve(path, args, envp);
-	free_split(envp);
 	return (result);
 }

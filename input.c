@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:19:36 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:50:28 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 12:53:01 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,17 @@ int	chose_buildin(t_cmd *cmd, int arg_count)
 	else if (ft_strncmp(cmd->cmd, "pwd", 4) == 0)
 		status = handle_pwd();
 	else if (ft_strncmp(cmd->cmd, "cd", 3) == 0)
-		status = handle_cd(cmd->args, arg_count);
+		status = handle_cd(cmd->args, arg_count, cmd->env);
 	else if (ft_strncmp(cmd->cmd, "echo", 5) == 0)
 		status = handle_echo(cmd, arg_count);
 	else if (ft_strncmp(cmd->cmd, "export", 7) == 0)
-		status = handle_export(cmd->args);
+		status = handle_export(cmd->args, cmd->env);
 	else if (ft_strncmp(cmd->cmd, "unset", 6) == 0)
-		status = handle_unset(cmd->args);
+		status = handle_unset(cmd->args, cmd->env);
 	else if (ft_strncmp(cmd->cmd, "env", 4) == 0)
-		status = handle_env(cmd->args);
+		status = handle_env(cmd->args, *(cmd->env));
 	else
-		status = handle_external(cmd->cmd, cmd->args);
+		status = handle_external(cmd);
 	return (status);
 }
 
@@ -76,27 +76,19 @@ void	parse_input_to_cmd(t_cmd *cmd, char **input)
 	fill_cmd(cmd, input);
 }
 
-t_cmd	*parse_input(char *input)
+t_cmd	*parse_input(char *input, char ***env)
 {
 	t_cmd	*cmd;
-	char	**args;
-	char	*preprocessed;
 
 	cmd = malloc(sizeof(t_cmd));
 	if (!cmd)
 		return (NULL);
-	preprocessed = preprocess_input(input);
-	args = ft_split(preprocessed, ' ');
-	free(preprocessed);
-	if (!args || !args[0])
+	if (!process_and_fill_cmd(cmd, input))
 	{
-		if (args)
-			free_split(args);
 		free(cmd);
 		return (NULL);
 	}
-	parse_input_to_cmd(cmd, args);
-	free_split(args);
+	cmd->env = env;
 	if (!cmd->cmd && !(cmd->infile || cmd->outfile || cmd->has_heredoc))
 	{
 		free(cmd);

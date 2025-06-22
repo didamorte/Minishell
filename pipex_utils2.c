@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_utils1.c                                     :+:      :+:    :+:   */
+/*   pipex_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 16:16:25 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 10:47:40 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 00:03:21 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,9 @@ void	close_unused_fds(t_cmd **cmds, int i, int *prev_read, int pipefd[2])
 	{
 		close(pipefd[1]);
 		*prev_read = pipefd[0];
+	}
+	else
+	{
+		close(pipefd[0]);
 	}
 }

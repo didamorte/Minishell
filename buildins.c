@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   buildins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:26:22 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/21 17:39:33 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:15:50 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	handle_pwd(void)
 	return (result);
 }
 
-int	handle_cd(char **args, int arg_count)
+int	handle_cd(char **args, int arg_count, char ***env)
 {
 	char	*path;
 	char	*home;
@@ -70,19 +70,14 @@ int	handle_cd(char **args, int arg_count)
 	path = args[1];
 	if (!path || path[0] == '\0' || path[0] == '~')
 	{
-		home = getenv("HOME");
+		home = get_env_value("HOME", *env);
 		if (!home)
 			return (write(2, "cd: HOME not set\n", 17), 1);
 		path = home;
 	}
-	else if (path[0] == '-')
-	{
-		home = getenv("OLDPWD");
-		if (!home)
-			return (write(2, "cd: OLDPWD not set\n", 17), 1);
-		path = home;
-	}
-	return (change_directory(path));
+	else if (path[0] == '-' && path[1] == '\0')
+		return (handle_cd_dash(env));
+	return (change_directory(path, env));
 }
 
 int	handle_echo(t_cmd *cmd, int arg_count)
@@ -111,25 +106,25 @@ int	handle_echo(t_cmd *cmd, int arg_count)
 	return (0);
 }
 
-int	handle_external(char *cmd, char **args)
+int	handle_external(t_cmd *cmd)
 {
 	char	*path;
 	int		status;
 
-	path = get_path(cmd);
+	path = get_path(cmd->cmd, *(cmd->env));
 	if (!path)
 	{
-		if (ft_strchr(cmd, '/'))
-			return (error_no_file(NULL, cmd));
-		return (error_cmd_not_found(NULL, cmd));
+		if (ft_strchr(cmd->cmd, '/'))
+			return (error_no_file(NULL, cmd->cmd));
+		return (error_cmd_not_found(NULL, cmd->cmd));
 	}
-	status = check_file(path, cmd);
+	status = check_file(path, cmd->cmd);
 	if (status != 0)
 	{
 		free(path);
 		return (status);
 	}
-	status = run_external_cmd(path, args);
+	status = run_external_cmd(path, cmd->args, *(cmd->env));
 	free(path);
 	return (status);
 }

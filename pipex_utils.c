@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/24 22:25:11 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 18:26:52 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/21 23:56:56 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ char	**remove_quotes_array(char **args)
 
 void	exec_or_builtin(t_cmd *cmd)
 {
-	extern char	**environ;
 	char		*path;
 	int			status;
 	int			argc;
@@ -63,14 +62,14 @@ void	exec_or_builtin(t_cmd *cmd)
 		status = chose_buildin(cmd, argc);
 		exit(status);
 	}
-	path = get_path(cmd->cmd);
+	path = get_path(cmd->cmd, *(cmd->env));
 	if (!path)
 	{
 		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(cmd->cmd, 2);
 		exit(1);
 	}
-	execve(path, remove_quotes_array(cmd->args), environ);
+	execve(path, remove_quotes_array(cmd->args), *(cmd->env));
 	perror("minishell: execve");
 	exit(1);
 }

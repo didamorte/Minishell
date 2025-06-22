@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_utils3.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 18:56:24 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/03 18:58:54 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 12:31:57 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ int	wait_for_pipeline_completion(int cmd_c, pid_t *pids)
 		waited_pid = waitpid(pids[idx], &raw_status, 0);
 		if (waited_pid < 0)
 			perror("minishell: waitpid");
+		if (WIFSIGNALED(raw_status) && WTERMSIG(raw_status) == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
 		if (waited_pid == pids[cmd_c - 1])
 		{
 			if (WIFEXITED(raw_status))

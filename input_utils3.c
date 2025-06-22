@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils3.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 23:30:47 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/17 17:48:11 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:33:45 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,4 +75,23 @@ bool	open_output_file(t_cmd *cmd)
 	else
 		close(tmp_fd);
 	return (false);
+}
+
+bool	process_and_fill_cmd(t_cmd *cmd, char *input)
+{
+	char	*preprocessed;
+	char	**args;
+
+	preprocessed = preprocess_input(input);
+	args = ft_split(preprocessed, ' ');
+	free(preprocessed);
+	if (!args || !args[0])
+	{
+		if (args)
+			free_split(args);
+		return (false);
+	}
+	parse_input_to_cmd(cmd, args);
+	free_split(args);
+	return (true);
 }

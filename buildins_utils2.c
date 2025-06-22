@@ -6,29 +6,28 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:39:05 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/18 20:20:04 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:30:12 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	**copy_and_sort_env(void)
+char	**copy_and_sort_env(char **env)
 {
-	extern char	**environ;
 	char		**copy;
 	int			count;
 	int			i;
 	int			j;
 
 	count = 0;
-	while (environ[count])
+	while (env[count])
 		count++;
 	copy = malloc((count + 1) * sizeof(char *));
 	if (!copy)
 		return (NULL);
 	i = -1;
 	while (++i < count)
-		copy[i] = ft_strdup(environ[i]);
+		copy[i] = ft_strdup(env[i]);
 	copy[count] = NULL;
 	i = -1;
 	while (++i < count - 1)
@@ -41,26 +40,28 @@ char	**copy_and_sort_env(void)
 	return (copy);
 }
 
-void	copy_and_replace_var(char **new_env, char *name, char *new_var)
+void	copy_and_replace_var(char **new_env, char *name,
+							char *new_var, char **old_env)
 {
-	extern char	**environ;
-	int			i;
-	int			j;
-	int			replaced;
+	int	i;
+	int	j;
+	int	replaced;
+	int	name_len;
 
 	i = 0;
 	j = 0;
 	replaced = 0;
-	while (environ[i])
+	name_len = ft_strlen(name);
+	while (old_env[i])
 	{
-		if (ft_strncmp(environ[i], name, ft_strlen(name)) == 0
-			&& environ[i][ft_strlen(name)] == '=')
+		if (!replaced && ft_strncmp(old_env[i], name, name_len) == 0
+			&& old_env[i][name_len] == '=')
 		{
 			new_env[j++] = ft_strdup(new_var);
 			replaced = 1;
 		}
 		else
-			new_env[j++] = ft_strdup(environ[i]);
+			new_env[j++] = ft_strdup(old_env[i]);
 		i++;
 	}
 	if (!replaced)
@@ -68,14 +69,14 @@ void	copy_and_replace_var(char **new_env, char *name, char *new_var)
 	new_env[j] = NULL;
 }
 
-int	print_sorted_env(void)
+int	print_sorted_env(char **env)
 {
 	char	**env_copy;
 	char	*temp;
 	int		i;
 	int		len;
 
-	env_copy = copy_and_sort_env();
+	env_copy = copy_and_sort_env(env);
 	if (!env_copy)
 		return (1);
 	i = 0;
@@ -95,58 +96,42 @@ int	print_sorted_env(void)
 	return (0);
 }
 
-int	set_env_var(char *name, char *value)
+int	set_env_var(char *name, char *value, char ***env)
 {
-	extern char	**environ;
-	char		*new_var;
-	char		**new_env;
-	int			count;
-	int			null_index;
+	char	*new_var;
+	char	**new_env;
+	int		count;
 
 	new_var = ft_strjoin_triple(name, "=", value);
 	if (!new_var)
 		return (1);
 	count = 0;
-	while (environ[count])
+	while ((*env)[count])
 		count++;
 	new_env = malloc((count + 2) * sizeof(char *));
 	if (!new_env)
 		return (free(new_var), 1);
-	copy_and_replace_var(new_env, name, new_var);
-	if (getenv(name) != NULL)
-		null_index = count;
-	else
-		null_index = count + 1;
-	new_env[null_index] = NULL;
-	environ = new_env;
+	copy_and_replace_var(new_env, name, new_var, *env);
+	free_env(*env);
+	*env = new_env;
 	free(new_var);
 	return (0);
 }
 
-int	unset_env_var(char *name)
+int	unset_env_var(char ***env, char *name)
 {
-	extern char	**environ;
-	char		**new_env;
-	int			i;
-	int			j;
+	int		i;
+	char	**new_env;
 
 	i = 0;
-	while (environ[i] && !is_env_match(environ[i], name))
+	while ((*env)[i] && !is_env_match((*env)[i], name))
 		i++;
-	if (!environ[i])
+	if (!(*env)[i])
 		return (0);
-	i = 0;
-	while (environ[i])
-		i++;
-	new_env = malloc(sizeof(char *) * i);
+	new_env = copy_env_excluding(*env, name);
 	if (!new_env)
 		return (1);
-	i = -1;
-	j = 0;
-	while (environ[++i])
-		if (!is_env_match(environ[i], name))
-			new_env[j++] = ft_strdup(environ[i]);
-	new_env[j] = NULL;
-	environ = new_env;
+	free_env(*env);
+	*env = new_env;
 	return (0);
 }

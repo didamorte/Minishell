@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 14:04:22 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/09 17:48:31 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:44:37 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,17 +64,18 @@ char	*append_char(char *result, char c)
 	return (new_str);
 }
 
-char	*expand_variable(char *result, const char *arg, int *i)
+char	*expand_variable(char *result, t_expand_ctx *ctx)
 {
 	int		start;
 	char	*var;
 	char	*value;
 
-	start = *i;
-	while (arg[*i] && (ft_isalnum(arg[*i]) || arg[*i] == '_'))
-		(*i)++;
-	var = ft_substr(arg, start, *i - start);
-	value = getenv(var);
+	start = *(ctx->i);
+	while (ctx->arg[*(ctx->i)] && (ft_isalnum(ctx->arg[*(ctx->i)])
+			|| ctx->arg[*(ctx->i)] == '_'))
+		(*(ctx->i))++;
+	var = ft_substr(ctx->arg, start, *(ctx->i) - start);
+	value = get_env_value(var, ctx->envp);
 	if (value)
 		result = ft_strjoin_flex(result, value, 1);
 	else
@@ -83,13 +84,18 @@ char	*expand_variable(char *result, const char *arg, int *i)
 	return (result);
 }
 
-char	*expand_variables(const char *arg, int last_exit_status)
+char	*expand_variables(const char *arg, int last_exit_status, char **envp)
 {
-	char	*result;
-	int		i;
+	char			*result;
+	int				i;
+	t_expand_ctx	ctx;
 
 	result = ft_calloc(1, 1);
 	i = 0;
+	ctx.arg = arg;
+	ctx.i = &i;
+	ctx.last_exit_status = last_exit_status;
+	ctx.envp = envp;
 	while (arg[i])
 	{
 		if (arg[i] == '\\' && arg[i + 1])
@@ -99,8 +105,7 @@ char	*expand_variables(const char *arg, int last_exit_status)
 		}
 		else if (arg[i] == '$')
 		{
-			result = handle_variable_expansion(result, arg, &i,
-					last_exit_status);
+			result = handle_variable_expansion(result, &ctx);
 		}
 		else
 			result = append_char(result, arg[i++]);

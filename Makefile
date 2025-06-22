@@ -13,7 +13,7 @@ SRCS := buildins.c buildins2.c buildins_utils.c buildins_utils2.c \
         input.c input_utils.c input_utils2.c input_utils3.c \
         input_utils4.c input_utils5.c minishell.c minishell_utils.c \
         pipex.c pipex_utils.c pipex_utils2.c pipex_utils3.c \
-        quotes_utils.c quotes_utils2.c
+        quotes_utils.c quotes_utils2.c buildins_utils5.c buildins_utils6.c
 
 OBJS := $(SRCS:.c=.o)
 
@@ -46,33 +46,5 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
-
-valgrind: 
-	$(file > $(SUPR_FILE),$(SUPRESSION_FILE_BODY))
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=$(SUPR_FILE) --tool=memcheck ./$(NAME)
-	$(RM) $(SUPR_FILE)
-
-define SUPRESSION_FILE_BODY
-{
-   name
-   Memcheck:Leak
-   fun:*alloc
-   ...
-   obj:*/libreadline.so.*
-   ...
-}
-{
-    leak readline
-    Memcheck:Leak
-    ...
-    fun:readline
-}
-{
-    leak add_history
-    Memcheck:Leak
-    ...
-    fun:add_history
-}
-endef
 
 .PHONY: all clean fclean re

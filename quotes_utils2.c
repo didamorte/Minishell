@@ -6,7 +6,7 @@
 /*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 22:01:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/15 18:34:53 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 14:31:00 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,26 +89,26 @@ char	*single_quotes(const char *str)
 	return (res);
 }
 
-char	*handle_variable_expansion(char *result, const char *arg, int *i,
-		int last_exit_status)
+char	*handle_variable_expansion(char *result, t_expand_ctx *ctx)
 {
 	char	*exit_code;
 
-	if (arg[*i + 1] == '?')
+	if (ctx->arg[*(ctx->i) + 1] == '?')
 	{
-		exit_code = ft_itoa(last_exit_status);
+		exit_code = ft_itoa(ctx->last_exit_status);
 		result = ft_strjoin_flex(result, exit_code, 1);
 		free(exit_code);
-		(*i) += 2;
+		*(ctx->i) += 2;
 	}
-	else if (ft_isalnum(arg[*i + 1]) || arg[*i + 1] == '_')
+	else if (ft_isalnum(ctx->arg[*(ctx->i) + 1])
+		|| ctx->arg[*(ctx->i) + 1] == '_')
 	{
-		(*i)++;
-		result = expand_variable(result, arg, i);
+		(*(ctx->i))++;
+		result = expand_variable(result, ctx);
 	}
 	else
 	{
-		result = append_char(result, arg[(*i)++]);
+		result = append_char(result, ctx->arg[(*(ctx->i))++]);
 	}
 	return (result);
 }

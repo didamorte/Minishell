@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleanups.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 17:30:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:47:35 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:23:37 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,16 @@ void	final_cleanup(char *input)
 	if (input)
 		free(input);
 	rl_clear_history();
+}
+
+void	free_env(char **env)
+{
+	int	i;
+
+	i = 0;
+	if (!env)
+		return ;
+	while (env && env[i])
+		free (env[i++]);
+	free(env);
 }

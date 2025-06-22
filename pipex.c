@@ -3,32 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 14:27:14 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:27:59 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 00:43:24 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	fill_cmds_array(t_cmd **cmds, char **args)
+static int	fill_cmds_array(t_cmd **cmds, char **args, char ***envp)
 {
 	int	i;
 
 	i = 0;
 	while (args[i])
 	{
-		cmds[i] = parse_input(args[i]);
+		cmds[i] = parse_input(args[i], envp);
 		if (!cmds[i])
 			return (-1);
+		cmds[i]->env = envp;
 		i++;
 	}
 	cmds[i] = NULL;
 	return (0);
 }
 
-t_cmd	**parse_pipeline(char *input)
+t_cmd	**parse_pipeline(char *input, char ***envp)
 {
 	char	**args;
 	t_cmd	**cmds;
@@ -41,7 +42,7 @@ t_cmd	**parse_pipeline(char *input)
 	cmds = malloc(sizeof(t_cmd *) * (count + 1));
 	if (!cmds)
 		return (NULL);
-	if (fill_cmds_array(cmds, args) < 0)
+	if (fill_cmds_array(cmds, args, envp) < 0)
 	{
 		free_split(args);
 		return (NULL);

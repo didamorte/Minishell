@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 14:23:06 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/17 17:47:48 by diogribe         ###   ########.fr       */
+/*   Updated: 2025/06/22 13:24:56 by rneto-fo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*process_arg(char *arg, int last_exit_status)
+static char	*process_arg(char *arg, int last_exit_status, char **envp)
 {
 	bool	was_single_quoted;
 	char	*no_quotes;
@@ -24,13 +24,15 @@ static char	*process_arg(char *arg, int last_exit_status)
 		return (NULL);
 	if (was_single_quoted)
 		return (no_quotes);
-	res = expand_variables(no_quotes, last_exit_status);
+	res = expand_variables(no_quotes, last_exit_status, envp);
 	free(no_quotes);
 	return (res);
 }
 
 static void	update_cmd(t_cmd *cmd)
 {
+	if (!cmd)
+		return ;
 	free(cmd->cmd);
 	if (cmd->args[0])
 		cmd->cmd = ft_strdup(cmd->args[0]);
@@ -43,6 +45,8 @@ static void	shift_args(t_cmd *cmd)
 	int		i;
 	char	*tmp;
 
+	if (!cmd->args || !cmd->args[0])
+		return ;
 	tmp = cmd->args[0];
 	i = 0;
 	while (cmd->args[i + 1])
@@ -64,7 +68,7 @@ void	process_args(t_cmd *cmd, int last_exit_status)
 	i = 0;
 	while (cmd->args[i])
 	{
-		new_arg = process_arg(cmd->args[i], last_exit_status);
+		new_arg = process_arg(cmd->args[i], last_exit_status, *(cmd->env));
 		free(cmd->args[i]);
 		if (new_arg)
 			cmd->args[i] = new_arg;
