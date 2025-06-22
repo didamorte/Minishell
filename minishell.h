@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 15:57:43 by diogribe          #+#    #+#             */
-/*   Updated: 2025/06/22 22:11:54 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 22:39:58 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_cmd
 	char	*outfile;
 	bool	append;
 	bool	has_heredoc;
+	int		heredoc_count;
 	char	*heredoc_delimiter;
 	bool	input_error;
 	char	***env;
@@ -57,6 +58,7 @@ char	*remove_quotes(const char *str);
 char	*single_quotes(const char *str);
 char	*double_quotes(const char *str);
 char	*ft_strjoin_flex(char *s1, char *s2, int flag);
+void	discard_heredoc(const char *delim);
 
 /* Input */
 

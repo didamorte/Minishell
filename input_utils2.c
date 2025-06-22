@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/18 20:22:03 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/21 20:20:29 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 22:40:24 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,22 @@ static int	redirect_output(t_cmd *cmd, int *saved_fds)
 
 int	redirect_io(t_cmd *cmd, int *saved_fds)
 {
+	int	i;
+
 	if (cmd->input_error)
 		return (1);
-	if (cmd->has_heredoc)
+	if (cmd->heredoc_count > 0)
 	{
+		i = 0;
+		while (i < cmd->heredoc_count - 1)
+		{
+			discard_heredoc(cmd->heredoc_delimiter);
+			i++;
+		}
 		if (handle_heredoc(cmd, saved_fds))
 			return (1);
 	}
-	else if (cmd->infile && redirect_input(cmd, saved_fds))
+	if (cmd->infile && redirect_input(cmd, saved_fds))
 		return (1);
 	if (cmd->outfile && redirect_output(cmd, saved_fds))
 		return (1);
@@ -75,6 +83,7 @@ void	init_cmd(t_cmd *cmd)
 	cmd->outfile = NULL;
 	cmd->append = false;
 	cmd->has_heredoc = false;
+	cmd->heredoc_count = 0;
 	cmd->heredoc_delimiter = NULL;
 	cmd->input_error = false;
 }

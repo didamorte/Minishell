@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils4.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 17:46:34 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/22 16:05:46 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 22:31:33 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static void	handle_heredocs(t_cmd *cmd, char **input, int *i)
 		cmd->heredoc_delimiter = NULL;
 	}
 	cmd->has_heredoc = true;
+	cmd->heredoc_count += 1;
 	cmd->heredoc_delimiter = remove_quotes(input[++(*i)]);
 }
 

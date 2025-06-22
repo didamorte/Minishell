@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quotes_utils2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rneto-fo <rneto-fo@student.42porto.com>    +#+  +:+       +#+        */
+/*   By: diogribe <diogribe@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/27 22:01:59 by rneto-fo          #+#    #+#             */
-/*   Updated: 2025/06/22 14:31:00 by rneto-fo         ###   ########.fr       */
+/*   Updated: 2025/06/22 22:41:39 by diogribe         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,20 @@ char	*handle_variable_expansion(char *result, t_expand_ctx *ctx)
 		result = append_char(result, ctx->arg[(*(ctx->i))++]);
 	}
 	return (result);
+}
+
+void	discard_heredoc(const char *delim)
+{
+	char	*line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, delim) == 0)
+		{
+			free(line);
+			break ;
+		}
+		free(line);
+	}
 }
